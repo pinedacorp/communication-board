@@ -1,317 +1,430 @@
 ```html
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
+
 <meta charset="UTF-8">
 
 <meta name="viewport"
-      content="width=device-width, initial-scale=1.0,
-               maximum-scale=1.0, user-scalable=no">
+      content="width=device-width,
+               initial-scale=1.0,
+               maximum-scale=1.0,
+               user-scalable=no">
 
 <title>Communication Board</title>
 
+
 <style>
-    * {
-        box-sizing: border-box;
-        -webkit-tap-highlight-color: transparent;
-    }
+
+/* =========================================================
+   GENERAL
+========================================================= */
+
+* {
+    box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent;
+}
+
+body {
+    margin: 0;
+    padding: 10px;
+
+    background: #eeeeee;
+
+    font-family: Arial, Helvetica, sans-serif;
+
+    text-align: center;
+
+    user-select: none;
+}
+
+
+/* =========================================================
+   TITLE
+========================================================= */
+
+h1 {
+    font-size: clamp(30px, 6vw, 52px);
+
+    margin: 5px 0 10px;
+
+    font-weight: bold;
+}
+
+
+/* =========================================================
+   MESSAGE DISPLAY
+========================================================= */
+
+#message {
+
+    background: white;
+
+    border: 5px solid #333;
+
+    border-radius: 18px;
+
+    min-height: 110px;
+
+    padding: 15px;
+
+    margin-bottom: 15px;
+
+    font-size: clamp(32px, 7vw, 64px);
+
+    font-weight: bold;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    word-break: break-word;
+}
+
+
+/* =========================================================
+   COMMUNICATION BUTTONS
+========================================================= */
+
+.button-grid {
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(2, 1fr);
+
+    gap: 10px;
+
+    margin-bottom: 15px;
+}
+
+
+button {
+
+    border: 4px solid #222;
+
+    border-radius: 18px;
+
+    min-height: 95px;
+
+    padding: 8px;
+
+    font-size:
+        clamp(25px, 5vw, 42px);
+
+    font-weight: bold;
+
+    cursor: pointer;
+
+    touch-action: manipulation;
+
+    box-shadow:
+        0 4px 0 #555;
+
+    transition:
+        transform 0.05s;
+}
+
+
+button:active {
+
+    transform:
+        translateY(4px);
+
+    box-shadow: none;
+}
+
+
+/* =========================================================
+   DIFFERENT BUTTON COLOURS
+========================================================= */
+
+.button-yes {
+    background: #8BE28B;
+}
+
+.button-no {
+    background: #FF9999;
+}
+
+.button-positive {
+    background: #FFD966;
+}
+
+.button-condition {
+    background: #C9B1FF;
+}
+
+.button-body {
+    background: #FFB6C1;
+}
+
+.button-needs {
+    background: #87CEEB;
+}
+
+.button-help {
+    background: #FFB347;
+}
+
+.button-other {
+    background: #B8E986;
+}
+
+
+/* =========================================================
+   KEYBOARD
+========================================================= */
+
+#keyboard {
+
+    margin-top: 20px;
+}
+
+
+#keyboardTitle {
+
+    font-size:
+        clamp(28px, 5vw, 42px);
+
+    font-weight: bold;
+
+    margin-bottom: 10px;
+}
+
+
+.keyboard-grid {
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(3, 1fr);
+
+    gap: 10px;
+}
+
+
+.letter {
+
+    min-height: 110px;
+
+    font-size:
+        clamp(45px, 9vw, 80px);
+
+    background: #FFFFFF;
+}
+
+
+/* =========================================================
+   KEYBOARD CONTROL BUTTONS
+========================================================= */
+
+.keyboard-controls {
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(2, 1fr);
+
+    gap: 10px;
+
+    margin-top: 10px;
+}
+
+
+.control {
+
+    min-height: 90px;
+
+    font-size:
+        clamp(28px, 5vw, 44px);
+}
+
+
+.delete {
+
+    background: #FF9999;
+}
+
+
+.clear {
+
+    background: #FFCC80;
+}
+
+
+.space {
+
+    grid-column:
+        span 2;
+
+    background: #D0E0FF;
+}
+
+
+.speak {
+
+    background: #8BE28B;
+}
+
+
+.repeat {
+
+    background: #C9B1FF;
+
+    width: 100%;
+
+    margin-top: 10px;
+}
+
+
+/* =========================================================
+   PAGE BUTTONS
+========================================================= */
+
+.page-controls {
+
+    display: grid;
+
+    grid-template-columns:
+        1fr 1fr;
+
+    gap: 10px;
+
+    margin-top: 10px;
+}
+
+
+.page-button {
+
+    min-height: 80px;
+
+    font-size:
+        clamp(26px, 5vw, 40px);
+
+    background: #D9D9D9;
+}
+
+
+/* =========================================================
+   POPUP
+========================================================= */
+
+#popup {
+
+    display: none;
+
+    position: fixed;
+
+    left: 5%;
+
+    right: 5%;
+
+    top: 25%;
+
+    background: white;
+
+    border: 6px solid #222;
+
+    border-radius: 20px;
+
+    padding: 25px;
+
+    font-size:
+        clamp(35px, 7vw, 65px);
+
+    font-weight: bold;
+
+    z-index: 9999;
+
+    box-shadow:
+        0 10px 40px
+        rgba(0,0,0,0.4);
+}
+
+
+#popupClose {
+
+    margin-top: 20px;
+
+    min-height: 80px;
+
+    font-size: 32px;
+
+    background: #DDD;
+}
+
+
+/* =========================================================
+   TABLETS / LARGE SCREENS
+========================================================= */
+
+@media (min-width: 700px) {
 
     body {
-        margin: 0;
-        padding: 10px;
-        background: #f2f2f2;
-        font-family: Arial, Helvetica, sans-serif;
-        text-align: center;
-        user-select: none;
+        padding: 20px;
     }
 
-    h1 {
-        font-size: clamp(28px, 5vw, 48px);
-        margin: 5px 0 10px;
-    }
-
-    /* Message display */
-
-    #message {
-        background: white;
-        border: 5px solid #333;
-        border-radius: 15px;
-        min-height: 100px;
-        padding: 15px;
-        margin-bottom: 15px;
-
-        font-size: clamp(32px, 7vw, 64px);
-        font-weight: bold;
-
-        display: flex;
-        align-items: center;
-        justify-content: center;
-
-        word-break: break-word;
-    }
-
-    /* Main communication buttons */
 
     .button-grid {
-        display: grid;
-        grid-template-columns: repeat(2, 1fr);
-        gap: 10px;
-        margin-bottom: 15px;
+
+        grid-template-columns:
+            repeat(4, 1fr);
     }
 
-    button {
-        border: 4px solid #222;
-        border-radius: 18px;
-        background: white;
-
-        min-height: 90px;
-
-        font-size: clamp(25px, 5vw, 42px);
-        font-weight: bold;
-
-        cursor: pointer;
-
-        touch-action: manipulation;
-
-        box-shadow: 0 4px 0 #555;
-    }
-
-    button:active {
-        transform: translateY(4px);
-        box-shadow: none;
-    }
-
-    /* Special YES / NO */
-
-    .yes {
-        background: #b9f6b9;
-    }
-
-    .no {
-        background: #ffb3b3;
-    }
-
-    /* Keyboard */
-
-    #keyboard {
-        margin-top: 20px;
-    }
-
-    #keyboardTitle {
-        font-size: clamp(28px, 5vw, 42px);
-        font-weight: bold;
-        margin-bottom: 10px;
-    }
 
     .keyboard-grid {
-        display: grid;
-        grid-template-columns: repeat(3, 1fr);
-        gap: 10px;
+
+        grid-template-columns:
+            repeat(4, 1fr);
     }
+
 
     .letter {
-        min-height: 110px;
-        font-size: clamp(45px, 9vw, 80px);
-        background: #ffffff;
+
+        min-height: 130px;
     }
 
-    /* Keyboard controls */
+}
 
-    .keyboard-controls {
-        display: grid;
-        grid-template-columns: repeat(2, 1fr);
-        gap: 10px;
-        margin-top: 10px;
-    }
-
-    .control {
-        min-height: 90px;
-        font-size: clamp(28px, 5vw, 44px);
-    }
-
-    .space {
-        grid-column: span 2;
-    }
-
-    .speak {
-        background: #a8d8ff;
-    }
-
-    .clear {
-        background: #ffd699;
-    }
-
-    .delete {
-        background: #ffcccc;
-    }
-
-    .repeat {
-        background: #d9c2ff;
-        width: 100%;
-        margin-top: 10px;
-    }
-
-    /* Page controls */
-
-    .page-controls {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 10px;
-        margin-top: 10px;
-    }
-
-    .page-button {
-        min-height: 80px;
-        font-size: clamp(26px, 5vw, 40px);
-        background: #ddd;
-    }
-
-    /* Popup */
-
-    #popup {
-        display: none;
-
-        position: fixed;
-        left: 5%;
-        right: 5%;
-        top: 30%;
-
-        background: white;
-        border: 6px solid #222;
-        border-radius: 20px;
-
-        padding: 25px;
-
-        font-size: clamp(35px, 7vw, 65px);
-        font-weight: bold;
-
-        z-index: 9999;
-
-        box-shadow: 0 10px 40px rgba(0,0,0,0.4);
-    }
-
-    #popupClose {
-        margin-top: 20px;
-        min-height: 80px;
-        font-size: 32px;
-        background: #ddd;
-    }
-
-    /* Larger tablets */
-
-    @media (min-width: 700px) {
-
-        body {
-            padding: 20px;
-        }
-
-        .button-grid {
-            grid-template-columns: repeat(4, 1fr);
-        }
-
-        .keyboard-grid {
-            grid-template-columns: repeat(4, 1fr);
-        }
-
-        .letter {
-            min-height: 130px;
-        }
-    }
 </style>
+
 </head>
+
 
 <body>
 
+
 <h1>Communication</h1>
 
+
+<!-- =====================================================
+     MESSAGE DISPLAY
+====================================================== -->
+
 <div id="message">
+
     Tap a button or type a message
-</div>
-
-
-<!-- ========================= -->
-<!-- COMMUNICATION BUTTONS -->
-<!-- ========================= -->
-
-<div class="button-grid">
-
-    <!-- YES / NO -->
-    <button class="yes"
-            onclick="communication('Wa')">
-        WA
-    </button>
-
-    <button class="no"
-            onclick="communication('Ali')">
-        ALI
-    </button>
-
-    <button onclick="communication('Good')">
-        GOOD
-    </button>
-
-    <button onclick="communication('Bad')">
-        BAD
-    </button>
-
-    <button onclick="communication('Tired')">
-        TIRED
-    </button>
-
-    <button onclick="communication('OK')">
-        OK
-    </button>
-
-    <button onclick="communication('Pain')">
-        PAIN
-    </button>
-
-    <button onclick="communication('Itchy')">
-        ITCHY
-    </button>
-
-    <button onclick="communication('Cold')">
-        COLD
-    </button>
-
-    <button onclick="communication('Hot')">
-        HOT
-    </button>
-
-    <button onclick="communication('Hungry')">
-        HUNGRY
-    </button>
-
-    <button onclick="communication('Water')">
-        WATER
-    </button>
-
-    <button onclick="communication('Toilet')">
-        TOILET
-    </button>
-
-    <button onclick="communication('Medicine')">
-        MEDICINE
-    </button>
-
-    <button onclick="communication('Help me')">
-        HELP ME
-    </button>
-
-    <button onclick="communication('More')">
-        MORE
-    </button>
-
-    <button onclick="communication('Stop')">
-        STOP
-    </button>
 
 </div>
 
 
-<!-- ========================= -->
-<!-- KEYBOARD -->
-<!-- ========================= -->
+<!-- =====================================================
+     COMMUNICATION BUTTONS
+====================================================== -->
+
+<div
+    class="button-grid"
+    id="communicationButtons">
+</div>
+
+
+<!-- =====================================================
+     KEYBOARD
+====================================================== -->
 
 <div id="keyboard">
 
@@ -319,48 +432,79 @@
         KEYBOARD A–M
     </div>
 
-    <div class="keyboard-grid" id="letters">
+
+    <div
+        class="keyboard-grid"
+        id="letters">
     </div>
+
 
     <div class="keyboard-controls">
 
-        <button class="control delete"
-                onclick="deleteLetter()">
+        <button
+            class="control delete"
+            onclick="deleteLetter()">
+
             DELETE
+
         </button>
 
-        <button class="control clear"
-                onclick="clearMessage()">
+
+        <button
+            class="control clear"
+            onclick="clearMessage()">
+
             CLEAR
+
         </button>
 
-        <button class="control space"
-                onclick="addSpace()">
+
+        <button
+            class="control space"
+            onclick="addSpace()">
+
             SPACE
+
         </button>
 
-        <button class="control speak"
-                onclick="speakMessage()">
+
+        <button
+            class="control speak"
+            onclick="speakMessage()">
+
             🔊 SPEAK
+
         </button>
 
     </div>
 
-    <button class="control repeat"
-            onclick="repeatMessage()">
+
+    <button
+        class="control repeat"
+        onclick="repeatMessage()">
+
         🔊 REPEAT MESSAGE
+
     </button>
+
 
     <div class="page-controls">
 
-        <button class="page-button"
-                onclick="previousKeyboard()">
+        <button
+            class="page-button"
+            onclick="previousKeyboard()">
+
             ◀ PREVIOUS
+
         </button>
 
-        <button class="page-button"
-                onclick="nextKeyboard()">
+
+        <button
+            class="page-button"
+            onclick="nextKeyboard()">
+
             NEXT ▶
+
         </button>
 
     </div>
@@ -368,26 +512,230 @@
 </div>
 
 
-<!-- ========================= -->
-<!-- POPUP -->
-<!-- ========================= -->
+<!-- =====================================================
+     POPUP
+====================================================== -->
 
 <div id="popup">
 
     <div id="popupText"></div>
 
-    <button id="popupClose"
-            onclick="closePopup()">
+
+    <button
+        id="popupClose"
+        onclick="closePopup()">
+
         CLOSE
+
     </button>
 
 </div>
 
 
+
 <script>
 
+
 /* =========================================================
-   SETTINGS
+   =========================================================
+
+   ⭐⭐ EASY EDIT SECTION ⭐⭐
+
+   THIS IS THE MAIN PART YOU WILL EDIT.
+
+   "text"  = what appears on the button
+
+   "speech" = what the device says
+
+   "colour" = colour of the button
+
+   =========================================================
+   ========================================================= */
+
+
+const communicationButtons = [
+
+    /*
+    ---------------------------------------------------------
+    YES
+    ---------------------------------------------------------
+    */
+
+    {
+        text: "WA",
+
+        speech: "wah",
+
+        colour: "button-yes"
+    },
+
+
+    /*
+    ---------------------------------------------------------
+    NO
+    ---------------------------------------------------------
+    */
+
+    {
+        text: "ALI",
+
+        speech: "ah-LEE",
+
+        colour: "button-no"
+    },
+
+
+    /*
+    ---------------------------------------------------------
+    OTHER BUTTONS
+    ---------------------------------------------------------
+    */
+
+    {
+        text: "GOOD",
+
+        speech: "Good",
+
+        colour: "button-positive"
+    },
+
+
+    {
+        text: "BAD",
+
+        speech: "Bad",
+
+        colour: "button-condition"
+    },
+
+
+    {
+        text: "TIRED",
+
+        speech: "Tired",
+
+        colour: "button-condition"
+    },
+
+
+    {
+        text: "OK",
+
+        speech: "Okay",
+
+        colour: "button-positive"
+    },
+
+
+    {
+        text: "PAIN",
+
+        speech: "Pain",
+
+        colour: "button-body"
+    },
+
+
+    {
+        text: "ITCHY",
+
+        speech: "Itchy",
+
+        colour: "button-body"
+    },
+
+
+    {
+        text: "COLD",
+
+        speech: "Cold",
+
+        colour: "button-body"
+    },
+
+
+    {
+        text: "HOT",
+
+        speech: "Hot",
+
+        colour: "button-body"
+    },
+
+
+    {
+        text: "HUNGRY",
+
+        speech: "Hungry",
+
+        colour: "button-needs"
+    },
+
+
+    {
+        text: "WATER",
+
+        speech: "Water",
+
+        colour: "button-needs"
+    },
+
+
+    {
+        text: "TOILET",
+
+        speech: "Toilet",
+
+        colour: "button-needs"
+    },
+
+
+    {
+        text: "MEDICINE",
+
+        speech: "Medicine",
+
+        colour: "button-needs"
+    },
+
+
+    {
+        text: "HELP ME",
+
+        speech: "Help me",
+
+        colour: "button-help"
+    },
+
+
+    {
+        text: "MORE",
+
+        speech: "More",
+
+        colour: "button-other"
+    },
+
+
+    {
+        text: "STOP",
+
+        speech: "Stop",
+
+        colour: "button-no"
+    }
+
+];
+
+
+
+/* =========================================================
+   END OF EASY EDIT SECTION
+   ========================================================= */
+
+
+/* =========================================================
+   VARIABLES
 ========================================================= */
 
 let messageText = "";
@@ -396,99 +744,217 @@ let lastSpoken = "";
 
 let keyboardPage = 0;
 
+let selectedVoice = null;
+
+let audioContext = null;
+
+
+
+/* =========================================================
+   KEYBOARD LETTERS
+========================================================= */
+
 const keyboardPages = [
 
-    ["A","B","C","D","E","F","G","H","I","J","K","L","M"],
+    [
+        "A","B","C","D","E","F","G",
+        "H","I","J","K","L","M"
+    ],
 
-    ["N","O","P","Q","R","S","T","U","V","W","X","Y","Z"]
+    [
+        "N","O","P","Q","R","S","T",
+        "U","V","W","X","Y","Z"
+    ]
 
 ];
 
 
+
 /* =========================================================
-   SPEECH VOICE
+   CREATE COMMUNICATION BUTTONS
 ========================================================= */
 
-let selectedVoice = null;
+function createCommunicationButtons() {
+
+    const container =
+        document.getElementById(
+            "communicationButtons"
+        );
 
 
-/*
-   Try to find a female English voice.
+    container.innerHTML = "";
 
-   Different phones/tablets provide different voices,
-   so we look for common female voice names first.
-*/
+
+    communicationButtons.forEach(
+        function(item) {
+
+            const button =
+                document.createElement("button");
+
+
+            button.textContent =
+                item.text;
+
+
+            button.className =
+                item.colour;
+
+
+            button.onclick =
+                function() {
+
+                    clickSound();
+
+                    /*
+                       Display the word exactly as
+                       defined in "text".
+                    */
+
+                    messageText =
+                        item.text;
+
+                    updateMessage();
+
+
+                    /*
+                       Speak the separate
+                       pronunciation defined
+                       in "speech".
+                    */
+
+                    speak(item.speech);
+
+                };
+
+
+            container.appendChild(button);
+
+        }
+    );
+
+}
+
+
+
+/* =========================================================
+   VOICE SELECTION
+========================================================= */
 
 function loadVoices() {
 
-    const voices = speechSynthesis.getVoices();
+    const voices =
+        speechSynthesis.getVoices();
 
-    if (!voices || voices.length === 0) {
+
+    if (!voices ||
+        voices.length === 0) {
+
         return;
     }
 
-    const englishVoices = voices.filter(voice =>
-        voice.lang &&
-        voice.lang.toLowerCase().startsWith("en")
-    );
+
+    /*
+       Look for English voices.
+    */
+
+    const englishVoices =
+        voices.filter(
+            voice =>
+                voice.lang &&
+                voice.lang
+                    .toLowerCase()
+                    .startsWith("en")
+        );
+
+
+    /*
+       Try common female voices first.
+
+       Different devices have different
+       voice names.
+    */
 
     const femaleNames = [
+
         "samantha",
         "karen",
         "moira",
         "victoria",
         "susan",
+        "serena",
+        "kate",
         "female",
         "google uk english female",
-        "google us english female",
-        "serena",
-        "kate"
+        "google us english female"
+
     ];
 
+
     selectedVoice =
-        englishVoices.find(voice => {
+        englishVoices.find(
+            function(voice) {
 
-            const name =
-                voice.name.toLowerCase();
+                const name =
+                    voice.name.toLowerCase();
 
-            return femaleNames.some(
-                female =>
-                    name.includes(female)
+
+                return femaleNames.some(
+                    function(femaleName) {
+
+                        return name.includes(
+                            femaleName
+                        );
+
+                    }
+                );
+
+            }
+        );
+
+
+    /*
+       If no obvious female voice is found,
+       prefer British English.
+    */
+
+    if (!selectedVoice) {
+
+        selectedVoice =
+            englishVoices.find(
+                voice =>
+                    voice.lang
+                        .toLowerCase() ===
+                    "en-gb"
             );
 
-        }) ||
+    }
 
-        englishVoices.find(voice =>
-            voice.lang.toLowerCase() === "en-gb"
-        ) ||
 
-        englishVoices[0] ||
+    /*
+       Final fallback.
+    */
 
-        null;
+    if (!selectedVoice) {
+
+        selectedVoice =
+            englishVoices[0] || null;
+
+    }
+
 }
 
 
-/*
-   Some browsers load voices slightly later.
-*/
+speechSynthesis.onvoiceschanged =
+    loadVoices;
 
-speechSynthesis.onvoiceschanged = loadVoices;
 
 loadVoices();
+
 
 
 /* =========================================================
    CLICK SOUND
 ========================================================= */
-
-let audioContext = null;
-
-
-/*
-   Create a short electronic click.
-
-   No audio file is needed.
-*/
 
 function clickSound() {
 
@@ -497,119 +963,155 @@ function clickSound() {
         if (!audioContext) {
 
             audioContext =
-                new (window.AudioContext ||
-                     window.webkitAudioContext)();
+                new (
+                    window.AudioContext ||
+                    window.webkitAudioContext
+                )();
 
         }
 
+
+        if (
+            audioContext.state ===
+            "suspended"
+        ) {
+
+            audioContext.resume();
+
+        }
+
+
         const oscillator =
-            audioContext.createOscillator();
+            audioContext
+                .createOscillator();
+
 
         const gain =
-            audioContext.createGain();
+            audioContext
+                .createGain();
+
 
         oscillator.type = "sine";
 
-        oscillator.frequency.value = 600;
+
+        oscillator.frequency.value =
+            600;
+
 
         gain.gain.setValueAtTime(
             0.12,
             audioContext.currentTime
         );
 
+
         gain.gain.exponentialRampToValueAtTime(
             0.001,
             audioContext.currentTime + 0.06
         );
 
+
         oscillator.connect(gain);
 
-        gain.connect(audioContext.destination);
+
+        gain.connect(
+            audioContext.destination
+        );
+
 
         oscillator.start();
+
 
         oscillator.stop(
             audioContext.currentTime + 0.06
         );
 
+
     } catch (error) {
 
         /*
-           If the device doesn't support the
-           Web Audio API, simply continue.
+           If sound isn't supported,
+           simply continue normally.
         */
 
     }
+
 }
 
 
+
 /* =========================================================
-   SPEAK TEXT
+   SPEAK
 ========================================================= */
 
-function speak(text, language = "en-GB") {
+function speak(text) {
 
-    if (!text || text.trim() === "") {
+    if (!text ||
+        text.trim() === "") {
+
         return;
     }
 
+
     speechSynthesis.cancel();
 
+
     const utterance =
-        new SpeechSynthesisUtterance(text);
+        new SpeechSynthesisUtterance(
+            text
+        );
+
 
     /*
-       Kapampangan does not have a dedicated
-       browser speech voice on most devices.
+       English is used for the browser voice.
 
-       For now we use the English voice and control
-       the actual word being spoken.
-
-       We can later experiment with a more
-       natural Kapampangan voice if one is available.
+       The actual word being spoken is
+       controlled by the "speech" field
+       above.
     */
 
-    utterance.lang = language;
+    utterance.lang = "en-GB";
+
 
     if (selectedVoice) {
-        utterance.voice = selectedVoice;
+
+        utterance.voice =
+            selectedVoice;
+
     }
+
+
+    /*
+       Slightly slower than normal.
+
+       This can be changed if required:
+
+       0.7 = slower
+       0.8 = slow
+       1.0 = normal
+    */
 
     utterance.rate = 0.82;
 
+
+    /*
+       Slightly higher pitch.
+    */
+
     utterance.pitch = 1.05;
+
 
     utterance.volume = 1;
 
-    speechSynthesis.speak(utterance);
+
+    speechSynthesis.speak(
+        utterance
+    );
+
 
     lastSpoken = text;
+
 }
 
-
-/* =========================================================
-   COMMUNICATION BUTTON
-========================================================= */
-
-function communication(text) {
-
-    clickSound();
-
-    /*
-       Show the actual spoken word in the
-       large message area.
-    */
-
-    messageText = text;
-
-    updateMessage();
-
-    /*
-       Speak immediately.
-    */
-
-    speak(text);
-}
 
 
 /* =========================================================
@@ -619,30 +1121,53 @@ function communication(text) {
 function updateMessage() {
 
     const message =
-        document.getElementById("message");
+        document.getElementById(
+            "message"
+        );
 
-    message.textContent =
-        messageText ||
-        "Tap a button or type a message";
+
+    if (messageText) {
+
+        message.textContent =
+            messageText;
+
+    } else {
+
+        message.textContent =
+            "Tap a button or type a message";
+
+    }
+
 }
 
 
+
 /* =========================================================
-   KEYBOARD
+   KEYBOARD DISPLAY
 ========================================================= */
 
 function displayKeyboard() {
 
     const letters =
-        document.getElementById("letters");
+        document.getElementById(
+            "letters"
+        );
+
 
     const title =
-        document.getElementById("keyboardTitle");
+        document.getElementById(
+            "keyboardTitle"
+        );
+
 
     letters.innerHTML = "";
 
+
     const page =
-        keyboardPages[keyboardPage];
+        keyboardPages[
+            keyboardPage
+        ];
+
 
     title.textContent =
         keyboardPage === 0
@@ -650,28 +1175,42 @@ function displayKeyboard() {
             : "KEYBOARD N–Z";
 
 
-    page.forEach(letter => {
+    page.forEach(
+        function(letter) {
 
-        const button =
-            document.createElement("button");
+            const button =
+                document.createElement(
+                    "button"
+                );
 
-        button.className = "letter";
 
-        button.textContent = letter;
+            button.className =
+                "letter";
 
-        button.onclick = function() {
 
-            clickSound();
+            button.textContent =
+                letter;
 
-            addLetter(letter);
 
-        };
+            button.onclick =
+                function() {
 
-        letters.appendChild(button);
+                    clickSound();
 
-    });
+                    addLetter(letter);
+
+                };
+
+
+            letters.appendChild(
+                button
+            );
+
+        }
+    );
 
 }
+
 
 
 /* =========================================================
@@ -687,6 +1226,7 @@ function addLetter(letter) {
 }
 
 
+
 /* =========================================================
    SPACE
 ========================================================= */
@@ -700,6 +1240,7 @@ function addSpace() {
     updateMessage();
 
 }
+
 
 
 /* =========================================================
@@ -718,6 +1259,7 @@ function deleteLetter() {
 }
 
 
+
 /* =========================================================
    CLEAR
 ========================================================= */
@@ -733,6 +1275,7 @@ function clearMessage() {
 }
 
 
+
 /* =========================================================
    SPEAK MESSAGE
 ========================================================= */
@@ -741,61 +1284,91 @@ function speakMessage() {
 
     clickSound();
 
+
     if (!messageText.trim()) {
+
         return;
+
     }
 
+
     speak(messageText);
+
 }
 
 
+
 /* =========================================================
-   REPEAT
+   REPEAT MESSAGE
 ========================================================= */
 
 function repeatMessage() {
 
     clickSound();
 
+
     if (lastSpoken) {
+
         speak(lastSpoken);
+
     }
 
 }
 
 
+
 /* =========================================================
-   KEYBOARD PAGES
+   NEXT KEYBOARD
 ========================================================= */
 
 function nextKeyboard() {
 
     clickSound();
 
+
     keyboardPage++;
 
-    if (keyboardPage >= keyboardPages.length) {
+
+    if (
+        keyboardPage >=
+        keyboardPages.length
+    ) {
+
         keyboardPage = 0;
+
     }
+
 
     displayKeyboard();
 
 }
 
+
+
+/* =========================================================
+   PREVIOUS KEYBOARD
+========================================================= */
 
 function previousKeyboard() {
 
     clickSound();
 
+
     keyboardPage--;
 
+
     if (keyboardPage < 0) {
-        keyboardPage = keyboardPages.length - 1;
+
+        keyboardPage =
+            keyboardPages.length - 1;
+
     }
+
 
     displayKeyboard();
 
 }
+
 
 
 /* =========================================================
@@ -805,79 +1378,114 @@ function previousKeyboard() {
 function showPopup() {
 
     if (!messageText.trim()) {
+
         return;
+
     }
+
 
     clickSound();
 
-    document.getElementById("popupText").textContent =
+
+    document.getElementById(
+        "popupText"
+    ).textContent =
         messageText;
 
-    document.getElementById("popup").style.display =
+
+    document.getElementById(
+        "popup"
+    ).style.display =
         "block";
 
 }
+
 
 
 function closePopup() {
 
     clickSound();
 
-    document.getElementById("popup").style.display =
+
+    document.getElementById(
+        "popup"
+    ).style.display =
         "none";
 
 }
+
 
 
 /* =========================================================
    PHYSICAL KEYBOARD
 ========================================================= */
 
-document.addEventListener("keydown", function(event) {
+document.addEventListener(
+    "keydown",
+    function(event) {
 
-    const key = event.key;
+        const key =
+            event.key;
 
-    if (/^[a-zA-Z]$/.test(key)) {
 
-        addLetter(key.toUpperCase());
+        if (
+            /^[a-zA-Z]$/.test(key)
+        ) {
 
-        return;
+            addLetter(
+                key.toUpperCase()
+            );
+
+            return;
+
+        }
+
+
+        if (key === " ") {
+
+            addSpace();
+
+            return;
+
+        }
+
+
+        if (key === "Backspace") {
+
+            deleteLetter();
+
+            return;
+
+        }
+
+
+        if (key === "Escape") {
+
+            clearMessage();
+
+            return;
+
+        }
+
+
+        if (key === "Enter") {
+
+            speakMessage();
+
+            return;
+
+        }
+
     }
+);
 
-    if (key === " ") {
-
-        addSpace();
-
-        return;
-    }
-
-    if (key === "Backspace") {
-
-        deleteLetter();
-
-        return;
-    }
-
-    if (key === "Escape") {
-
-        clearMessage();
-
-        return;
-    }
-
-    if (key === "Enter") {
-
-        speakMessage();
-
-        return;
-    }
-
-});
 
 
 /* =========================================================
-   INITIALISE
+   START
 ========================================================= */
+
+createCommunicationButtons();
 
 displayKeyboard();
 
@@ -885,6 +1493,8 @@ updateMessage();
 
 </script>
 
+
 </body>
+
 </html>
 ```
