@@ -1,0 +1,1776 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+  <meta charset="UTF-8">
+
+  <meta name="viewport"
+    content="width=device-width,
+             initial-scale=1.0,
+             maximum-scale=1.0,
+             user-scalable=no">
+
+  <title>Communication Board</title>
+
+
+  <style>
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+
+    body {
+      font-family: Arial, Helvetica, sans-serif;
+      background: #111111;
+      padding: 12px;
+      min-height: 100vh;
+    }
+
+
+    /* =====================================================
+       MAIN TITLE
+       ===================================================== */
+
+    h1 {
+      text-align: center;
+      color: #ffffff;
+      background: #333333;
+
+      font-size: 30px;
+      font-weight: bold;
+
+      border-radius: 16px;
+
+      padding: 16px;
+      margin-bottom: 16px;
+
+      letter-spacing: 1px;
+    }
+
+
+    /* =====================================================
+       COMMUNICATION BUTTONS
+       ===================================================== */
+
+    .category {
+      margin-bottom: 18px;
+    }
+
+
+    .cat-label {
+      font-size: 20px;
+      font-weight: bold;
+
+      color: #eeeeee;
+
+      text-transform: uppercase;
+      letter-spacing: 2px;
+
+      margin-bottom: 8px;
+      padding-left: 4px;
+    }
+
+
+    .btn-grid {
+      display: grid;
+
+      grid-template-columns:
+        repeat(auto-fit, minmax(150px, 1fr));
+
+      gap: 12px;
+    }
+
+
+    .btn {
+      border: none;
+
+      border-radius: 18px;
+
+      padding: 20px 10px;
+
+      font-size: 28px;
+      font-weight: bold;
+
+      cursor: pointer;
+
+      line-height: 1.1;
+
+      display: flex;
+
+      flex-direction: column;
+
+      align-items: center;
+      justify-content: center;
+
+      gap: 8px;
+
+      min-height: 120px;
+
+      -webkit-tap-highlight-color: transparent;
+
+      touch-action: manipulation;
+
+      color: #ffffff;
+
+      transition:
+        transform 0.1s,
+        opacity 0.1s;
+    }
+
+
+    .btn:active {
+      transform: scale(0.94);
+      opacity: 0.8;
+    }
+
+
+    .btn .icon {
+      font-size: 44px;
+      line-height: 1;
+    }
+
+
+    /* YES / NO */
+
+    .btn-yes {
+      background: #16804f;
+    }
+
+    .btn-no {
+      background: #c43d20;
+    }
+
+
+    /* FEELING */
+
+    .btn-good {
+      background: #2e720d;
+    }
+
+    .btn-bad {
+      background: #8f2020;
+    }
+
+    .btn-tired {
+      background: #4a2e8a;
+    }
+
+    .btn-ok {
+      background: #0d604b;
+    }
+
+
+    /* BODY */
+
+    .btn-pain {
+      background: #7a1818;
+    }
+
+    .btn-itchy {
+      background: #87500b;
+    }
+
+    .btn-cold {
+      background: #0a3d7a;
+    }
+
+    .btn-hot {
+      background: #993418;
+    }
+
+
+    /* NEEDS */
+
+    .btn-hungry {
+      background: #a86010;
+    }
+
+    .btn-thirsty {
+      background: #1058a0;
+    }
+
+    .btn-toilet {
+      background: #245210;
+    }
+
+    .btn-medicine {
+      background: #322f80;
+    }
+
+
+    /* HELP */
+
+    .btn-help {
+      background: #b01030;
+
+      min-height: 140px;
+
+      font-size: 34px;
+    }
+
+    .btn-more {
+      background: #444444;
+    }
+
+    .btn-stop {
+      background: #8f1818;
+    }
+
+
+    /* =====================================================
+       KEYBOARD SECTION
+       ===================================================== */
+
+    .keyboard-section {
+
+      margin-top: 28px;
+
+      background: #222222;
+
+      border: 4px solid #555555;
+
+      border-radius: 22px;
+
+      padding: 14px;
+
+      margin-bottom: 20px;
+    }
+
+
+    .keyboard-title {
+
+      text-align: center;
+
+      color: #ffffff;
+
+      font-size: 32px;
+
+      font-weight: bold;
+
+      margin-bottom: 12px;
+    }
+
+
+    /* =====================================================
+       LARGE MESSAGE DISPLAY
+       ===================================================== */
+
+    .typed-text {
+
+      width: 100%;
+
+      min-height: 120px;
+
+      background: #ffffff;
+
+      color: #111111;
+
+      border: 5px solid #777777;
+
+      border-radius: 18px;
+
+      padding: 20px;
+
+      font-size: 44px;
+
+      font-weight: bold;
+
+      line-height: 1.2;
+
+      margin-bottom: 16px;
+
+      overflow-wrap: break-word;
+
+      word-break: break-word;
+
+    }
+
+
+    /* =====================================================
+       KEYBOARD PAGE CONTROLS
+       ===================================================== */
+
+    .keyboard-page {
+
+      display: none;
+    }
+
+
+    .keyboard-page.active {
+
+      display: block;
+    }
+
+
+    .page-indicator {
+
+      text-align: center;
+
+      color: #ffffff;
+
+      font-size: 25px;
+
+      font-weight: bold;
+
+      margin-bottom: 12px;
+    }
+
+
+    /* =====================================================
+       MASSIVE LETTER KEYS
+       ===================================================== */
+
+    .letter-grid {
+
+      display: grid;
+
+      grid-template-columns:
+        repeat(3, 1fr);
+
+      gap: 12px;
+
+    }
+
+
+    .letter-key {
+
+      width: 100%;
+
+      height: 120px;
+
+      background: #ffffff;
+
+      color: #111111;
+
+      border: 5px solid #777777;
+
+      border-radius: 18px;
+
+      font-size: 62px;
+
+      font-weight: bold;
+
+      cursor: pointer;
+
+      display: flex;
+
+      align-items: center;
+
+      justify-content: center;
+
+      touch-action: manipulation;
+
+      -webkit-tap-highlight-color: transparent;
+
+      box-shadow: 0 5px 0 #555555;
+
+    }
+
+
+    .letter-key:active {
+
+      transform: translateY(5px);
+
+      background: #dddddd;
+
+      box-shadow: none;
+
+    }
+
+
+    /* =====================================================
+       KEYBOARD NAVIGATION
+       ===================================================== */
+
+    .keyboard-navigation {
+
+      display: grid;
+
+      grid-template-columns:
+        1fr 1fr;
+
+      gap: 12px;
+
+      margin-top: 14px;
+    }
+
+
+    .nav-key {
+
+      min-height: 90px;
+
+      border: none;
+
+      border-radius: 18px;
+
+      font-size: 30px;
+
+      font-weight: bold;
+
+      color: #ffffff;
+
+      cursor: pointer;
+
+      touch-action: manipulation;
+
+    }
+
+
+    .previous-key {
+
+      background: #555555;
+    }
+
+
+    .next-key {
+
+      background: #555555;
+    }
+
+
+    .nav-key:active {
+
+      transform: scale(0.96);
+    }
+
+
+    /* =====================================================
+       SPECIAL KEYBOARD BUTTONS
+       ===================================================== */
+
+    .special-buttons {
+
+      display: grid;
+
+      grid-template-columns:
+        1fr 1.5fr 1fr 1.3fr;
+
+      gap: 10px;
+
+      margin-top: 14px;
+    }
+
+
+    .special-key {
+
+      min-height: 95px;
+
+      border: none;
+
+      border-radius: 18px;
+
+      font-size: 26px;
+
+      font-weight: bold;
+
+      color: #ffffff;
+
+      cursor: pointer;
+
+      touch-action: manipulation;
+
+      line-height: 1.1;
+    }
+
+
+    .delete-key {
+
+      background: #9b431b;
+    }
+
+
+    .space-key {
+
+      background: #555555;
+    }
+
+
+    .clear-key {
+
+      background: #a51d1d;
+    }
+
+
+    .speak-key {
+
+      background: #16804f;
+
+      font-size: 30px;
+    }
+
+
+    .special-key:active {
+
+      transform: scale(0.96);
+    }
+
+
+    /* =====================================================
+       REPEAT BUTTON
+       ===================================================== */
+
+    .repeat-button {
+
+      width: 100%;
+
+      min-height: 90px;
+
+      margin-top: 12px;
+
+      border: none;
+
+      border-radius: 18px;
+
+      background: #185fa5;
+
+      color: #ffffff;
+
+      font-size: 30px;
+
+      font-weight: bold;
+
+      cursor: pointer;
+
+      touch-action: manipulation;
+    }
+
+
+    .repeat-button:active {
+
+      transform: scale(0.97);
+    }
+
+
+    /* =====================================================
+       LARGE POPUP
+       ===================================================== */
+
+    .flash-overlay {
+
+      position: fixed;
+
+      inset: 0;
+
+      background:
+        rgba(0, 0, 0, 0.80);
+
+      display: none;
+
+      z-index: 998;
+    }
+
+
+    .flash-msg {
+
+      position: fixed;
+
+      top: 50%;
+      left: 50%;
+
+      transform:
+        translate(-50%, -50%);
+
+      background: #ffffff;
+
+      color: #111111;
+
+      font-size: 58px;
+
+      font-weight: bold;
+
+      padding: 40px;
+
+      border-radius: 24px;
+
+      z-index: 999;
+
+      display: none;
+
+      text-align: center;
+
+      width: 92vw;
+
+      max-width: 1100px;
+
+      max-height: 85vh;
+
+      overflow-y: auto;
+
+      line-height: 1.2;
+
+      box-shadow:
+        0 8px 40px
+        rgba(0,0,0,0.6);
+
+      overflow-wrap: break-word;
+    }
+
+
+    /* =====================================================
+       TABLET / LARGE SCREEN
+       ===================================================== */
+
+    @media (min-width: 900px) {
+
+      .letter-grid {
+
+        grid-template-columns:
+          repeat(4, 1fr);
+
+      }
+
+
+      .letter-key {
+
+        height: 145px;
+
+        font-size: 78px;
+
+      }
+
+
+      .typed-text {
+
+        font-size: 56px;
+
+        min-height: 145px;
+
+      }
+
+    }
+
+
+    /* =====================================================
+       PHONE
+       ===================================================== */
+
+    @media (max-width: 600px) {
+
+      body {
+
+        padding: 7px;
+
+      }
+
+
+      h1 {
+
+        font-size: 25px;
+
+        padding: 13px;
+
+      }
+
+
+      .letter-grid {
+
+        gap: 8px;
+
+      }
+
+
+      .letter-key {
+
+        height: 100px;
+
+        font-size: 52px;
+
+        border-width: 4px;
+
+      }
+
+
+      .typed-text {
+
+        font-size: 34px;
+
+        min-height: 100px;
+
+      }
+
+
+      .special-buttons {
+
+        grid-template-columns:
+          1fr 1.3fr 1fr;
+
+      }
+
+
+      .speak-key {
+
+        grid-column:
+          span 3;
+
+      }
+
+
+      .special-key {
+
+        min-height: 80px;
+
+        font-size: 22px;
+
+      }
+
+
+      .keyboard-title {
+
+        font-size: 27px;
+
+      }
+
+    }
+
+  </style>
+
+</head>
+
+
+<body>
+
+
+  <!-- =====================================================
+       TITLE
+       ===================================================== -->
+
+  <h1>
+    🗣️ COMMUNICATION BOARD
+  </h1>
+
+
+  <!-- =====================================================
+       YES / NO
+       ===================================================== -->
+
+  <div class="category">
+
+    <div class="cat-label">
+      Yes / No
+    </div>
+
+    <div class="btn-grid">
+
+      <button
+        class="btn btn-yes"
+        onclick="flash('✅', 'YES')">
+
+        <span class="icon">✅</span>
+        YES
+
+      </button>
+
+
+      <button
+        class="btn btn-no"
+        onclick="flash('❌', 'NO')">
+
+        <span class="icon">❌</span>
+        NO
+
+      </button>
+
+    </div>
+
+  </div>
+
+
+  <!-- =====================================================
+       FEELING
+       ===================================================== -->
+
+  <div class="category">
+
+    <div class="cat-label">
+      Feeling
+    </div>
+
+    <div class="btn-grid">
+
+      <button
+        class="btn btn-good"
+        onclick="flash('😊', 'GOOD')">
+
+        <span class="icon">😊</span>
+        GOOD
+
+      </button>
+
+
+      <button
+        class="btn btn-bad"
+        onclick="flash('😔', 'BAD')">
+
+        <span class="icon">😔</span>
+        BAD
+
+      </button>
+
+
+      <button
+        class="btn btn-tired"
+        onclick="flash('😴', 'TIRED')">
+
+        <span class="icon">😴</span>
+        TIRED
+
+      </button>
+
+
+      <button
+        class="btn btn-ok"
+        onclick="flash('🙂', 'OK')">
+
+        <span class="icon">🙂</span>
+        OK
+
+      </button>
+
+    </div>
+
+  </div>
+
+
+  <!-- =====================================================
+       BODY / PAIN
+       ===================================================== -->
+
+  <div class="category">
+
+    <div class="cat-label">
+      Body / Pain
+    </div>
+
+    <div class="btn-grid">
+
+      <button
+        class="btn btn-pain"
+        onclick="flash('😣', 'PAIN')">
+
+        <span class="icon">😣</span>
+        PAIN
+
+      </button>
+
+
+      <button
+        class="btn btn-itchy"
+        onclick="flash('😖', 'ITCHY')">
+
+        <span class="icon">😖</span>
+        ITCHY
+
+      </button>
+
+
+      <button
+        class="btn btn-cold"
+        onclick="flash('🥶', 'COLD')">
+
+        <span class="icon">🥶</span>
+        COLD
+
+      </button>
+
+
+      <button
+        class="btn btn-hot"
+        onclick="flash('🥵', 'HOT')">
+
+        <span class="icon">🥵</span>
+        HOT
+
+      </button>
+
+    </div>
+
+  </div>
+
+
+  <!-- =====================================================
+       NEEDS
+       ===================================================== -->
+
+  <div class="category">
+
+    <div class="cat-label">
+      Needs
+    </div>
+
+    <div class="btn-grid">
+
+      <button
+        class="btn btn-hungry"
+        onclick="flash('🍽️', 'HUNGRY')">
+
+        <span class="icon">🍽️</span>
+        HUNGRY
+
+      </button>
+
+
+      <button
+        class="btn btn-thirsty"
+        onclick="flash('💧', 'WATER')">
+
+        <span class="icon">💧</span>
+        WATER
+
+      </button>
+
+
+      <button
+        class="btn btn-toilet"
+        onclick="flash('🚻', 'TOILET')">
+
+        <span class="icon">🚻</span>
+        TOILET
+
+      </button>
+
+
+      <button
+        class="btn btn-medicine"
+        onclick="flash('💊', 'MEDICINE')">
+
+        <span class="icon">💊</span>
+        MEDICINE
+
+      </button>
+
+    </div>
+
+  </div>
+
+
+  <!-- =====================================================
+       HELP
+       ===================================================== -->
+
+  <div class="category">
+
+    <div class="cat-label">
+      Help
+    </div>
+
+    <div class="btn-grid">
+
+      <button
+        class="btn btn-help"
+        onclick="flash('🚨', 'HELP ME!')">
+
+        <span
+          class="icon"
+          style="font-size:52px;">
+          🚨
+        </span>
+
+        HELP ME!
+
+      </button>
+
+
+      <button
+        class="btn btn-more"
+        onclick="flash('➕', 'MORE')">
+
+        <span class="icon">
+          ➕
+        </span>
+
+        MORE
+
+      </button>
+
+
+      <button
+        class="btn btn-stop"
+        onclick="flash('🛑', 'STOP')">
+
+        <span class="icon">
+          🛑
+        </span>
+
+        STOP
+
+      </button>
+
+    </div>
+
+  </div>
+
+
+  <!-- =====================================================
+       KEYBOARD
+       ===================================================== -->
+
+  <div class="keyboard-section">
+
+
+    <div class="keyboard-title">
+
+      ⌨️ TYPE A MESSAGE
+
+    </div>
+
+
+    <!-- LARGE MESSAGE -->
+
+    <div
+      id="typedText"
+      class="typed-text">
+
+      TAP A LETTER BELOW...
+
+    </div>
+
+
+    <!-- ===================================================
+         KEYBOARD PAGE 1
+         =================================================== -->
+
+    <div
+      id="keyboardPage1"
+      class="keyboard-page active">
+
+      <div class="page-indicator">
+
+        LETTERS A – M
+
+      </div>
+
+
+      <div class="letter-grid">
+
+        <button class="letter-key"
+          onclick="typeLetter('A')">
+          A
+        </button>
+
+        <button class="letter-key"
+          onclick="typeLetter('B')">
+          B
+        </button>
+
+        <button class="letter-key"
+          onclick="typeLetter('C')">
+          C
+        </button>
+
+        <button class="letter-key"
+          onclick="typeLetter('D')">
+          D
+        </button>
+
+        <button class="letter-key"
+          onclick="typeLetter('E')">
+          E
+        </button>
+
+        <button class="letter-key"
+          onclick="typeLetter('F')">
+          F
+        </button>
+
+        <button class="letter-key"
+          onclick="typeLetter('G')">
+          G
+        </button>
+
+        <button class="letter-key"
+          onclick="typeLetter('H')">
+          H
+        </button>
+
+        <button class="letter-key"
+          onclick="typeLetter('I')">
+          I
+        </button>
+
+        <button class="letter-key"
+          onclick="typeLetter('J')">
+          J
+        </button>
+
+        <button class="letter-key"
+          onclick="typeLetter('K')">
+          K
+        </button>
+
+        <button class="letter-key"
+          onclick="typeLetter('L')">
+          L
+        </button>
+
+        <button class="letter-key"
+          onclick="typeLetter('M')">
+          M
+        </button>
+
+      </div>
+
+
+      <div class="keyboard-navigation">
+
+        <button
+          class="nav-key previous-key"
+          onclick="showKeyboard(2)">
+
+          ➡️ N – Z
+
+        </button>
+
+        <button
+          class="nav-key next-key"
+          onclick="showKeyboard(2)">
+
+          NEXT ➡️
+
+        </button>
+
+      </div>
+
+    </div>
+
+
+    <!-- ===================================================
+         KEYBOARD PAGE 2
+         =================================================== -->
+
+    <div
+      id="keyboardPage2"
+      class="keyboard-page">
+
+      <div class="page-indicator">
+
+        LETTERS N – Z
+
+      </div>
+
+
+      <div class="letter-grid">
+
+        <button class="letter-key"
+          onclick="typeLetter('N')">
+          N
+        </button>
+
+        <button class="letter-key"
+          onclick="typeLetter('O')">
+          O
+        </button>
+
+        <button class="letter-key"
+          onclick="typeLetter('P')">
+          P
+        </button>
+
+        <button class="letter-key"
+          onclick="typeLetter('Q')">
+          Q
+        </button>
+
+        <button class="letter-key"
+          onclick="typeLetter('R')">
+          R
+        </button>
+
+        <button class="letter-key"
+          onclick="typeLetter('S')">
+          S
+        </button>
+
+        <button class="letter-key"
+          onclick="typeLetter('T')">
+          T
+        </button>
+
+        <button class="letter-key"
+          onclick="typeLetter('U')">
+          U
+        </button>
+
+        <button class="letter-key"
+          onclick="typeLetter('V')">
+          V
+        </button>
+
+        <button class="letter-key"
+          onclick="typeLetter('W')">
+          W
+        </button>
+
+        <button class="letter-key"
+          onclick="typeLetter('X')">
+          X
+        </button>
+
+        <button class="letter-key"
+          onclick="typeLetter('Y')">
+          Y
+        </button>
+
+        <button class="letter-key"
+          onclick="typeLetter('Z')">
+          Z
+        </button>
+
+      </div>
+
+
+      <div class="keyboard-navigation">
+
+        <button
+          class="nav-key previous-key"
+          onclick="showKeyboard(1)">
+
+          ⬅️ A – M
+
+        </button>
+
+        <button
+          class="nav-key next-key"
+          onclick="showKeyboard(1)">
+
+          A – M ⬅️
+
+        </button>
+
+      </div>
+
+    </div>
+
+
+    <!-- ===================================================
+         SPECIAL BUTTONS
+         =================================================== -->
+
+    <div class="special-buttons">
+
+
+      <button
+        class="special-key delete-key"
+        onclick="backspace()">
+
+        ⌫<br>
+        DELETE
+
+      </button>
+
+
+      <button
+        class="special-key space-key"
+        onclick="typeSpace()">
+
+        SPACE
+
+      </button>
+
+
+      <button
+        class="special-key clear-key"
+        onclick="clearText()">
+
+        CLEAR
+
+      </button>
+
+
+      <button
+        class="special-key speak-key"
+        onclick="speakMessage()">
+
+        🔊<br>
+        SPEAK
+
+      </button>
+
+    </div>
+
+
+    <!-- REPEAT -->
+
+    <button
+      class="repeat-button"
+      onclick="speakMessage()">
+
+      🔊 REPEAT MESSAGE
+
+    </button>
+
+
+  </div>
+
+
+  <!-- =====================================================
+       LARGE POPUP
+       ===================================================== -->
+
+  <div
+    class="flash-overlay"
+    id="overlay"
+    onclick="hideFlash()">
+  </div>
+
+
+  <div
+    class="flash-msg"
+    id="flashMsg"
+    onclick="hideFlash()">
+  </div>
+
+
+  <!-- =====================================================
+       JAVASCRIPT
+       ===================================================== -->
+
+  <script>
+
+
+    /* =====================================================
+       VARIABLES
+       ===================================================== */
+
+    var flashTimer;
+
+    var typedMessage = "";
+
+
+    /* =====================================================
+       COMMUNICATION BUTTON POPUP
+       ===================================================== */
+
+    function flash(icon, word) {
+
+      var msg =
+        document.getElementById(
+          "flashMsg"
+        );
+
+      var overlay =
+        document.getElementById(
+          "overlay"
+        );
+
+
+      msg.innerHTML =
+        '<span style="font-size:70px;">' +
+        icon +
+        '</span>' +
+        '<br>' +
+        word;
+
+
+      msg.style.display = "block";
+
+      overlay.style.display = "block";
+
+
+      clearTimeout(flashTimer);
+
+
+      flashTimer =
+        setTimeout(
+          hideFlash,
+          3000
+        );
+
+    }
+
+
+    /* =====================================================
+       HIDE POPUP
+       ===================================================== */
+
+    function hideFlash() {
+
+      document.getElementById(
+        "flashMsg"
+      ).style.display = "none";
+
+
+      document.getElementById(
+        "overlay"
+      ).style.display = "none";
+
+
+      clearTimeout(flashTimer);
+
+    }
+
+
+    /* =====================================================
+       UPDATE MESSAGE
+       ===================================================== */
+
+    function updateTypedText() {
+
+      var display =
+        document.getElementById(
+          "typedText"
+        );
+
+
+      if (typedMessage.length === 0) {
+
+        display.innerText =
+          "TAP A LETTER BELOW...";
+
+      } else {
+
+        display.innerText =
+          typedMessage;
+
+      }
+
+    }
+
+
+    /* =====================================================
+       ADD LETTER
+       ===================================================== */
+
+    function typeLetter(letter) {
+
+      typedMessage += letter;
+
+      updateTypedText();
+
+    }
+
+
+    /* =====================================================
+       SPACE
+       ===================================================== */
+
+    function typeSpace() {
+
+      if (
+        typedMessage.length > 0 &&
+        !typedMessage.endsWith(" ")
+      ) {
+
+        typedMessage += " ";
+
+        updateTypedText();
+
+      }
+
+    }
+
+
+    /* =====================================================
+       DELETE
+       ===================================================== */
+
+    function backspace() {
+
+      if (
+        typedMessage.length > 0
+      ) {
+
+        typedMessage =
+          typedMessage.substring(
+            0,
+            typedMessage.length - 1
+          );
+
+        updateTypedText();
+
+      }
+
+    }
+
+
+    /* =====================================================
+       CLEAR
+       ===================================================== */
+
+    function clearText() {
+
+      typedMessage = "";
+
+      updateTypedText();
+
+    }
+
+
+    /* =====================================================
+       SWITCH KEYBOARD
+       ===================================================== */
+
+    function showKeyboard(page) {
+
+      var page1 =
+        document.getElementById(
+          "keyboardPage1"
+        );
+
+      var page2 =
+        document.getElementById(
+          "keyboardPage2"
+        );
+
+
+      page1.classList.remove("active");
+
+      page2.classList.remove("active");
+
+
+      if (page === 1) {
+
+        page1.classList.add("active");
+
+      } else {
+
+        page2.classList.add("active");
+
+      }
+
+    }
+
+
+    /* =====================================================
+       SPEAK MESSAGE
+       ===================================================== */
+
+    function speakMessage() {
+
+      if (
+        typedMessage.trim() === ""
+      ) {
+
+        flash(
+          "🔊",
+          "PLEASE TYPE A MESSAGE"
+        );
+
+        return;
+
+      }
+
+
+      /*
+       * Stop anything currently being spoken.
+       */
+
+      window.speechSynthesis.cancel();
+
+
+      /*
+       * Create speech.
+       */
+
+      var speech =
+        new SpeechSynthesisUtterance(
+          typedMessage
+        );
+
+
+      /*
+       * English voice.
+       */
+
+      speech.lang = "en-GB";
+
+
+      /*
+       * Slightly slower speech.
+       * This is intentional for an elderly
+       * listener.
+       */
+
+      speech.rate = 0.85;
+
+
+      /*
+       * Normal pitch.
+       */
+
+      speech.pitch = 1;
+
+
+      /*
+       * Speak.
+       */
+
+      window.speechSynthesis.speak(
+        speech
+      );
+
+
+      /*
+       * Also show the message
+       * visually.
+       */
+
+      showMessagePopup();
+
+    }
+
+
+    /* =====================================================
+       SHOW TYPED MESSAGE
+       ===================================================== */
+
+    function showMessagePopup() {
+
+      var msg =
+        document.getElementById(
+          "flashMsg"
+        );
+
+      var overlay =
+        document.getElementById(
+          "overlay"
+        );
+
+
+      msg.innerHTML =
+        '<div style="' +
+        'font-size:30px;' +
+        'margin-bottom:20px;">' +
+        'MESSAGE' +
+        '</div>' +
+
+        '<div style="' +
+        'font-size:60px;' +
+        'line-height:1.2;">' +
+
+        typedMessage +
+
+        '</div>' +
+
+        '<div style="' +
+        'font-size:26px;' +
+        'margin-top:25px;' +
+        'color:#555;">' +
+
+        '🔊 SPEAKING...' +
+
+        '</div>';
+
+
+      msg.style.display =
+        "block";
+
+
+      overlay.style.display =
+        "block";
+
+
+      clearTimeout(flashTimer);
+
+
+      flashTimer =
+        setTimeout(
+          hideFlash,
+          6000
+        );
+
+    }
+
+
+    /* =====================================================
+       PHYSICAL KEYBOARD SUPPORT
+       ===================================================== */
+
+    document.addEventListener(
+      "keydown",
+      function(event) {
+
+        var key = event.key;
+
+
+        /*
+         * A-Z
+         */
+
+        if (
+          /^[a-zA-Z]$/.test(key)
+        ) {
+
+          typeLetter(
+            key.toUpperCase()
+          );
+
+          event.preventDefault();
+
+        }
+
+
+        /*
+         * SPACE
+         */
+
+        else if (
+          key === " "
+        ) {
+
+          typeSpace();
+
+          event.preventDefault();
+
+        }
+
+
+        /*
+         * BACKSPACE
+         */
+
+        else if (
+          key === "Backspace"
+        ) {
+
+          backspace();
+
+          event.preventDefault();
+
+        }
+
+
+        /*
+         * ESCAPE = CLEAR
+         */
+
+        else if (
+          key === "Escape"
+        ) {
+
+          clearText();
+
+          event.preventDefault();
+
+        }
+
+
+        /*
+         * ENTER = SPEAK
+         */
+
+        else if (
+          key === "Enter"
+        ) {
+
+          speakMessage();
+
+          event.preventDefault();
+
+        }
+
+      }
+    );
+
+
+  </script>
+
+
+</body>
+
+</html>
+```
