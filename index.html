@@ -678,6 +678,9 @@ let currentUtterance = null;
 
 let speakTimer = null;
 
+// The last text sent to the voice (used to replay the very first touch).
+let lastRequestedSpeech = "";
+
 
 /* =========================================================
    KEYBOARD LETTERS
@@ -974,6 +977,7 @@ function speak(text) {
     utterance.volume = 1;
 
     currentUtterance = utterance;
+    lastRequestedSpeech = text;
 
     clearTimeout(speakTimer);
 
@@ -1344,37 +1348,31 @@ updateMessage();
 
 
 /* =========================================================
-   FORGIVING TOUCH HANDLING
+   INSTANT TOUCH HANDLING
 
-   A normal browser click only happens if the finger is lifted
-   quickly and stays perfectly still. Here, a touch counts as a
-   press when the finger is lifted, however long it was held,
-   and even if the finger wandered a little.
+   A button is pressed the moment a finger touches it, so no
+   lifting, holding or timing is needed. Holding a finger down
+   does not repeat the button; each touch is one press.
 
-   ⭐ SETTINGS YOU CAN CHANGE ⭐
+   ⭐ SETTING YOU CAN CHANGE ⭐
 ========================================================= */
 
-// How far (in pixels) the finger may drift and still count as a press.
-// Bigger = more forgiving. Moving further than this is treated as a scroll.
-const TOUCH_DRIFT_LIMIT = 80;
-
-// After a button is pressed, the same button ignores further presses for
-// this many milliseconds. Stops tremor or a slow lift causing repeats.
+// After a button is pressed, the same button ignores new touches for
+// this many milliseconds. Stops a shaky finger bouncing on and off the
+// screen and pressing the same button several times.
 // Set to 0 to turn off.
-const SAME_BUTTON_LOCKOUT_MS = 350;
+const SAME_BUTTON_LOCKOUT_MS = 500;
 
 
-(function forgivingTouch() {
+(function instantTouch() {
 
     let activeTouchId = null;
     let activeControl = null;
-    let startX = 0;
-    let startY = 0;
-    let startScroll = 0;
-    let cancelled = false;
+    let needsAudioReplay = false;
 
     let lastControl = null;
     let lastTime = 0;
+    let lastTouchHandled = 0;
 
     function findControl(target) {
         if (!target || !target.closest) return null;
@@ -1387,7 +1385,7 @@ const SAME_BUTTON_LOCKOUT_MS = 350;
         if (activeControl) activeControl.classList.remove("pressed");
         activeTouchId = null;
         activeControl = null;
-        cancelled = false;
+        needsAudioReplay = false;
     }
 
     function findTouch(list, id) {
@@ -1397,6 +1395,7 @@ const SAME_BUTTON_LOCKOUT_MS = 350;
         return null;
     }
 
+    // THE PRESS HAPPENS HERE: as soon as the finger lands.
     document.addEventListener("touchstart", function(event) {
 
         // Follow only the first finger; ignore a resting palm or knuckle.
@@ -1408,62 +1407,12 @@ const SAME_BUTTON_LOCKOUT_MS = 350;
 
         activeTouchId = touch.identifier;
         activeControl = control;
-        startX = touch.clientX;
-        startY = touch.clientY;
-        startScroll = window.pageYOffset;
-        cancelled = false;
 
-        // Show the button as pressed straight away.
         control.classList.add("pressed");
-
-    }, { capture: true, passive: true });
-
-    document.addEventListener("touchmove", function(event) {
-
-        if (activeTouchId === null) return;
-
-        const touch = findTouch(event.changedTouches, activeTouchId);
-        if (!touch) return;
-
-        const moved = Math.hypot(
-            touch.clientX - startX,
-            touch.clientY - startY
-        );
-
-        // Only give up if the finger really travelled (a deliberate swipe).
-        if (moved > TOUCH_DRIFT_LIMIT) {
-            cancelled = true;
-            activeControl.classList.remove("pressed");
-        }
-
-    }, { capture: true, passive: true });
-
-    document.addEventListener("touchend", function(event) {
-
-        if (activeTouchId === null) return;
-
-        const touch = findTouch(event.changedTouches, activeTouchId);
-        if (!touch) return;
-
-        const control = activeControl;
-
-        const scrolled =
-            Math.abs(window.pageYOffset - startScroll) > 5;
-
-        const wasCancelled = cancelled || scrolled;
-
-        reset();
-
-        if (wasCancelled || !control) return;
-
-        // Stop the browser also sending its own click afterwards.
-        if (event.cancelable) event.preventDefault();
-
-        // Make sure audio is unlocked before we play anything.
-        unlockAudio();
 
         const now = Date.now();
 
+        // Ignore a bounce on the same button straight after a press.
         if (
             SAME_BUTTON_LOCKOUT_MS > 0 &&
             control === lastControl &&
@@ -1475,15 +1424,57 @@ const SAME_BUTTON_LOCKOUT_MS = 350;
         lastControl = control;
         lastTime = now;
 
-        // Run the button's normal action. The press was started on this
-        // button, so it counts even if the finger slid off it slightly.
+        // iOS only allows the very first sound once a touch has finished.
+        // If audio is not unlocked yet, the voice is replayed on release.
+        needsAudioReplay = !audioUnlocked;
+
         control.click();
+
+    }, { capture: true, passive: true });
+
+    document.addEventListener("touchend", function(event) {
+
+        if (activeTouchId === null) return;
+
+        const touch = findTouch(event.changedTouches, activeTouchId);
+        if (!touch) return;
+
+        const replay = needsAudioReplay;
+
+        reset();
+
+        lastTouchHandled = Date.now();
+
+        // Stop the browser also sending its own click after the touch.
+        if (event.cancelable) event.preventDefault();
+
+        unlockAudio();
+
+        // First touch only: say it now that audio is allowed.
+        if (replay && lastRequestedSpeech) {
+            speak(lastRequestedSpeech);
+        }
 
     }, { capture: true, passive: false });
 
     document.addEventListener("touchcancel", function() {
         reset();
     }, { capture: true, passive: true });
+
+    // Safety net: ignore any real click that follows a touch we handled.
+    // (Clicks made by the code itself, and keyboard clicks, have detail 0.)
+    document.addEventListener("click", function(event) {
+
+        if (
+            event.detail > 0 &&
+            Date.now() - lastTouchHandled < 1000 &&
+            findControl(event.target)
+        ) {
+            event.preventDefault();
+            event.stopImmediatePropagation();
+        }
+
+    }, true);
 
     // Stop the long-press menu that iOS/Android can show on a held button.
     document.addEventListener("contextmenu", function(event) {
