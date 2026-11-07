@@ -1,4 +1,3 @@
-```html
 <!DOCTYPE html>
 <html lang="en">
 
@@ -137,6 +136,30 @@ button:active {
     box-shadow: none;
 }
 
+/* Large picture symbols with clear word labels */
+.communication-button {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 3px;
+    line-height: 1.05;
+}
+
+.button-picture {
+    display: block;
+    font-size: clamp(38px, 7vw, 62px);
+    line-height: 1;
+}
+
+.button-word {
+    display: block;
+    font-size: clamp(22px, 4vw, 36px);
+}
+
+#message { cursor: pointer; }
+#message:focus-visible { outline: 5px solid #1769aa; outline-offset: 3px; }
+
 
 /* =========================================================
    DIFFERENT BUTTON COLOURS
@@ -197,24 +220,82 @@ button:active {
 
 
 .keyboard-grid {
-
-    display: grid;
-
-    grid-template-columns:
-        repeat(3, 1fr);
-
+    display: flex;
+    flex-direction: column;
     gap: 10px;
 }
 
+.keyboard-row {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 8px;
+}
+
+.keyboard-row.middle-row {
+    padding-left: 4%;
+    padding-right: 4%;
+}
+
+.keyboard-row.bottom-row {
+    padding-left: 8%;
+    padding-right: 8%;
+}
 
 .letter {
-
-    min-height: 110px;
-
-    font-size:
-        clamp(45px, 9vw, 80px);
-
+    min-width: 0;
+    min-height: 100px;
+    padding: 4px;
+    font-size: clamp(38px, 8vw, 72px);
     background: #FFFFFF;
+    transform-origin: center;
+}
+
+.letter.pop {
+    animation: letterPop 180ms ease-out;
+}
+
+@keyframes letterPop {
+    0% { transform: scale(1); background: #FFFFFF; }
+    45% { transform: scale(1.12); background: #FFF2A8; }
+    100% { transform: scale(1); background: #FFFFFF; }
+}
+
+.keyboard-bottom-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    margin-top: 10px;
+    min-height: 90px;
+}
+
+.spacebar {
+    width: 62%;
+    min-height: 85px;
+    font-size: clamp(25px, 5vw, 40px);
+    background: #D0E0FF;
+}
+
+.keyboard-arrow {
+    position: absolute;
+    min-width: 100px;
+    width: 19%;
+    min-height: 85px;
+    font-size: clamp(34px, 6vw, 54px);
+    background: #D9D9D9;
+}
+
+.keyboard-arrow.arrow-left { left: 0; }
+.keyboard-arrow.arrow-right { right: 0; }
+
+#message.pop-message {
+    animation: messagePop 180ms ease-out;
+}
+
+@keyframes messagePop {
+    0% { transform: scale(1); }
+    45% { transform: scale(1.025); }
+    100% { transform: scale(1); }
 }
 
 
@@ -253,15 +334,6 @@ button:active {
 .clear {
 
     background: #FFCC80;
-}
-
-
-.space {
-
-    grid-column:
-        span 2;
-
-    background: #D0E0FF;
 }
 
 
@@ -415,7 +487,8 @@ button:active {
      MESSAGE DISPLAY
 ====================================================== -->
 
-<div id="message">
+<div id="message" role="button" tabindex="0"
+     aria-label="Tap to hear the message">
 
     Tap a button or type a message
 
@@ -436,6 +509,29 @@ button:active {
     <div
         class="keyboard-grid"
         id="letters">
+    </div>
+
+
+    <div class="keyboard-bottom-row">
+
+        <button
+            class="keyboard-arrow arrow-right"
+            id="keyboardArrow"
+            onclick="changeKeyboard()"
+            aria-label="Next half of keyboard">
+
+            ▶
+
+        </button>
+
+        <button
+            class="spacebar"
+            onclick="addSpace()">
+
+            SPACE
+
+        </button>
+
     </div>
 
 
@@ -460,15 +556,6 @@ button:active {
 
 
         <button
-            class="control space"
-            onclick="addSpace()">
-
-            SPACE
-
-        </button>
-
-
-        <button
             class="control speak"
             onclick="speakMessage()">
 
@@ -487,27 +574,6 @@ button:active {
 
     </button>
 
-
-    <div class="page-controls">
-
-        <button
-            class="page-button"
-            onclick="previousKeyboard()">
-
-            ◀ PREVIOUS
-
-        </button>
-
-
-        <button
-            class="page-button"
-            onclick="nextKeyboard()">
-
-            NEXT ▶
-
-        </button>
-
-    </div>
 
 </div>
 
@@ -562,6 +628,7 @@ const communicationButtons = [
 
     {
         text: "WA",
+        picture: "👍",
         speech: "wah",
         colour: "button-yes"
     },
@@ -575,6 +642,7 @@ const communicationButtons = [
 
     {
         text: "ALI",
+        picture: "👎",
         speech: "ah-LEE",
         colour: "button-no"
     },
@@ -588,90 +656,105 @@ const communicationButtons = [
 
     {
         text: "GOOD",
+        picture: "😊",
         speech: "Good",
         colour: "button-positive"
     },
 
     {
         text: "BAD",
+        picture: "🙁",
         speech: "Bad",
         colour: "button-condition"
     },
 
     {
         text: "TIRED",
+        picture: "😴",
         speech: "Tired",
         colour: "button-condition"
     },
 
     {
         text: "OK",
+        picture: "👌",
         speech: "Okay",
         colour: "button-positive"
     },
 
     {
         text: "PAIN",
+        picture: "🤕",
         speech: "Pain",
         colour: "button-body"
     },
 
     {
         text: "ITCHY",
+        picture: "🩹",
         speech: "Itchy",
         colour: "button-body"
     },
 
     {
         text: "COLD",
+        picture: "🥶",
         speech: "Cold",
         colour: "button-body"
     },
 
     {
         text: "HOT",
+        picture: "🥵",
         speech: "Hot",
         colour: "button-body"
     },
 
     {
         text: "HUNGRY",
+        picture: "🍽️",
         speech: "Hungry",
         colour: "button-needs"
     },
 
     {
         text: "WATER",
+        picture: "💧",
         speech: "Water",
         colour: "button-needs"
     },
 
     {
         text: "TOILET",
+        picture: "🚽",
         speech: "Toilet",
         colour: "button-needs"
     },
 
     {
         text: "MEDICINE",
+        picture: "💊",
         speech: "Medicine",
         colour: "button-needs"
     },
 
     {
         text: "HELP ME",
+        picture: "🆘",
         speech: "Help me",
         colour: "button-help"
     },
 
     {
         text: "MORE",
+        picture: "➕",
         speech: "More",
         colour: "button-other"
     },
 
     {
         text: "STOP",
+        picture: "✋",
         speech: "Stop",
         colour: "button-no"
     },
@@ -683,48 +766,56 @@ const communicationButtons = [
 
     {
         text: "ASU",
+        picture: "🐕",
         speech: "ahsoo",
         colour: "button-no"
     },
 
     {
         text: "PUSA",
+        picture: "🐈",
         speech: "poosah",
         colour: "button-positive"
     },
 
     {
         text: "DIAPER",
+        picture: "🧷",
         speech: "diaper",
         colour: "button-condition"
     },
 
     {
         text: "NILAGA",
+        picture: "🍲",
         speech: "nihlagah",
         colour: "button-body"
     },
 
     {
         text: "INASAL",
+        picture: "🍗",
         speech: "inahsal",
         colour: "button-needs"
     },
 
     {
         text: "ADOBO",
+        picture: "🥘",
         speech: "ahhdohboh",
         colour: "button-help"
     },
 
     {
         text: "MORE2",
+        picture: "➕",
         speech: "more",
         colour: "button-no"
     },
 
     {
         text: "MORE3",
+        picture: "➕",
         speech: "more",
         colour: "button-no"
     }
@@ -743,6 +834,7 @@ const communicationButtons = [
 ========================================================= */
 
 let messageText = "";
+let messageSpeech = "";
 
 let lastSpoken = "";
 
@@ -760,14 +852,18 @@ let audioContext = null;
 
 const keyboardPages = [
 
+    // Left half of a normal QWERTY keyboard
     [
-        "A","B","C","D","E","F","G",
-        "H","I","J","K","L","M"
+        ["Q", "W", "E", "R", "T"],
+        ["A", "S", "D", "F", "G"],
+        ["Z", "X", "C", "V", "B"]
     ],
 
+    // Right half of a normal QWERTY keyboard
     [
-        "N","O","P","Q","R","S","T",
-        "U","V","W","X","Y","Z"
+        ["Y", "U", "I", "O", "P"],
+        ["H", "J", "K", "L", "N"],
+        ["M"]
     ]
 
 ];
@@ -796,12 +892,19 @@ function createCommunicationButtons() {
                 document.createElement("button");
 
 
-            button.textContent =
-                item.text;
-
-
             button.className =
-                item.colour;
+                "communication-button " + item.colour;
+
+            const picture = document.createElement("span");
+            picture.className = "button-picture";
+            picture.textContent = item.picture || "💬";
+
+            const word = document.createElement("span");
+            word.className = "button-word";
+            word.textContent = item.text;
+
+            button.appendChild(picture);
+            button.appendChild(word);
 
 
             button.onclick =
@@ -816,6 +919,7 @@ function createCommunicationButtons() {
 
                     messageText =
                         item.text;
+                    messageSpeech = item.speech;
 
                     updateMessage();
 
@@ -1142,8 +1246,26 @@ function updateMessage() {
 
     }
 
+    message.classList.remove("pop-message");
+    void message.offsetWidth;
+    message.classList.add("pop-message");
+
 }
 
+
+// Tap or press Enter/Space on the message area to hear the whole message.
+const messageDisplay = document.getElementById("message");
+messageDisplay.addEventListener("click", function() {
+    clickSound();
+    const textToSpeak = messageSpeech || messageText;
+    if (textToSpeak.trim()) speak(textToSpeak);
+});
+messageDisplay.addEventListener("keydown", function(event) {
+    if (event.key === "Enter" || event.key === " ") {
+        event.preventDefault();
+        messageDisplay.click();
+    }
+});
 
 
 /* =========================================================
@@ -1152,69 +1274,81 @@ function updateMessage() {
 
 function displayKeyboard() {
 
-    const letters =
-        document.getElementById(
-            "letters"
-        );
-
-
-    const title =
-        document.getElementById(
-            "keyboardTitle"
-        );
-
+    const letters = document.getElementById("letters");
+    const title = document.getElementById("keyboardTitle");
+    const arrow = document.getElementById("keyboardArrow");
 
     letters.innerHTML = "";
 
-
-    const page =
-        keyboardPages[
-            keyboardPage
-        ];
-
+    const page = keyboardPages[keyboardPage];
 
     title.textContent =
         keyboardPage === 0
-            ? "KEYBOARD A–M"
-            : "KEYBOARD N–Z";
+            ? "KEYBOARD – LEFT HALF"
+            : "KEYBOARD – RIGHT HALF";
 
+    page.forEach(function(rowLetters, rowIndex) {
 
-    page.forEach(
-        function(letter) {
+        const row = document.createElement("div");
 
-            const button =
-                document.createElement(
-                    "button"
-                );
+        row.className =
+            "keyboard-row" +
+            (rowIndex === 1 ? " middle-row" : "") +
+            (rowIndex === 2 ? " bottom-row" : "");
 
+        rowLetters.forEach(function(letter) {
 
-            button.className =
-                "letter";
+            const button = document.createElement("button");
 
+            button.className = "letter";
+            button.textContent = letter;
+            button.setAttribute("aria-label", "Letter " + letter);
 
-            button.textContent =
-                letter;
+            button.onclick = function() {
 
+                clickSound();
 
-            button.onclick =
-                function() {
+                button.classList.remove("pop");
+                void button.offsetWidth;
+                button.classList.add("pop");
 
-                    clickSound();
+                addLetter(letter);
+            };
 
-                    addLetter(letter);
+            row.appendChild(button);
 
-                };
+        });
 
+        letters.appendChild(row);
 
-            letters.appendChild(
-                button
-            );
+    });
 
-        }
-    );
+    if (keyboardPage === 0) {
+
+        arrow.textContent = "▶";
+        arrow.className = "keyboard-arrow arrow-right";
+        arrow.setAttribute("aria-label", "Show right half of keyboard");
+
+    } else {
+
+        arrow.textContent = "◀";
+        arrow.className = "keyboard-arrow arrow-left";
+        arrow.setAttribute("aria-label", "Show left half of keyboard");
+
+    }
 
 }
 
+
+function changeKeyboard() {
+
+    clickSound();
+
+    keyboardPage = keyboardPage === 0 ? 1 : 0;
+
+    displayKeyboard();
+
+}
 
 
 /* =========================================================
@@ -1224,8 +1358,15 @@ function displayKeyboard() {
 function addLetter(letter) {
 
     messageText += letter;
+    messageSpeech = messageText;
 
     updateMessage();
+
+    // Speak only the letter name, not the word "capital".
+    // Lowercase text helps some browser voices avoid saying "capital A".
+    const previousLastSpoken = lastSpoken;
+    speak(letter.toLowerCase());
+    lastSpoken = previousLastSpoken;
 
 }
 
@@ -1240,6 +1381,7 @@ function addSpace() {
     clickSound();
 
     messageText += " ";
+    messageSpeech = messageText;
 
     updateMessage();
 
@@ -1257,6 +1399,7 @@ function deleteLetter() {
 
     messageText =
         messageText.slice(0, -1);
+    messageSpeech = messageText;
 
     updateMessage();
 
@@ -1273,6 +1416,7 @@ function clearMessage() {
     clickSound();
 
     messageText = "";
+    messageSpeech = "";
 
     updateMessage();
 
@@ -1316,60 +1460,6 @@ function repeatMessage() {
         speak(lastSpoken);
 
     }
-
-}
-
-
-
-/* =========================================================
-   NEXT KEYBOARD
-========================================================= */
-
-function nextKeyboard() {
-
-    clickSound();
-
-
-    keyboardPage++;
-
-
-    if (
-        keyboardPage >=
-        keyboardPages.length
-    ) {
-
-        keyboardPage = 0;
-
-    }
-
-
-    displayKeyboard();
-
-}
-
-
-
-/* =========================================================
-   PREVIOUS KEYBOARD
-========================================================= */
-
-function previousKeyboard() {
-
-    clickSound();
-
-
-    keyboardPage--;
-
-
-    if (keyboardPage < 0) {
-
-        keyboardPage =
-            keyboardPages.length - 1;
-
-    }
-
-
-    displayKeyboard();
 
 }
 
