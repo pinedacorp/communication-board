@@ -118,8 +118,12 @@ button {
 
     cursor: pointer;
 
-    touch-action: manipulation;
+    touch-action: none;
+    -webkit-user-select: none;
+    user-select: none;
+    -webkit-touch-callout: none;
 
+    /* A little extra breathing room makes the whole button easier to hit. */
     box-shadow:
         0 4px 0 #555;
 
@@ -1584,6 +1588,68 @@ createCommunicationButtons();
 displayKeyboard();
 
 updateMessage();
+
+/* =========================================================
+   FORGIVING TOUCH / PRESS HANDLING
+   Activate as soon as the finger or mouse button goes down.
+   This helps when the user cannot make a quick tap-and-release.
+   Prevent the browser's later click from activating it twice.
+========================================================= */
+
+(function enableForgivingPresses() {
+    let lastPressedTarget = null;
+    let lastPressTime = 0;
+
+    function getPressTarget(target) {
+        if (!target || !target.closest) return null;
+
+        const control = target.closest("button, #message");
+        if (!control) return null;
+
+        // Ignore disabled controls and anything inside the popup except its button.
+        if (control.disabled) return null;
+        return control;
+    }
+
+    document.addEventListener("pointerdown", function(event) {
+        const control = getPressTarget(event.target);
+        if (!control) return;
+
+        // Only handle the primary finger / mouse button.
+        if (event.pointerType === "mouse" && event.button !== 0) return;
+
+        event.preventDefault();
+
+        lastPressedTarget = control;
+        lastPressTime = Date.now();
+
+        // Trigger the existing button action immediately, without waiting for release.
+        control.click();
+    }, { capture: true, passive: false });
+
+    document.addEventListener("click", function(event) {
+        const control = getPressTarget(event.target);
+        if (!control) return;
+
+        // The synthetic click from control.click() has detail 0 and must pass.
+        // Suppress the browser-generated click after the same physical press.
+        if (
+            event.detail > 0 &&
+            control === lastPressedTarget &&
+            Date.now() - lastPressTime < 1500
+        ) {
+            event.preventDefault();
+            event.stopImmediatePropagation();
+        }
+    }, true);
+
+    document.addEventListener("contextmenu", function(event) {
+        if (getPressTarget(event.target)) {
+            event.preventDefault();
+        }
+    }, true);
+})();
+
 
 </script>
 
