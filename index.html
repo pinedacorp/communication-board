@@ -108,9 +108,16 @@ button {
 }
 
 
-button:active {
+button:active,
+button.pressed {
     transform: translateY(4px);
     box-shadow: none;
+}
+
+/* The picture and word inside a button never take the touch themselves,
+   so a long press can't select text or open "Look Up" on the emoji. */
+button * {
+    pointer-events: none;
 }
 
 /* Large picture symbols with clear word labels */
@@ -1334,6 +1341,156 @@ createCommunicationButtons();
 displayKeyboard();
 
 updateMessage();
+
+
+/* =========================================================
+   FORGIVING TOUCH HANDLING
+
+   A normal browser click only happens if the finger is lifted
+   quickly and stays perfectly still. Here, a touch counts as a
+   press when the finger is lifted, however long it was held,
+   and even if the finger wandered a little.
+
+   ⭐ SETTINGS YOU CAN CHANGE ⭐
+========================================================= */
+
+// How far (in pixels) the finger may drift and still count as a press.
+// Bigger = more forgiving. Moving further than this is treated as a scroll.
+const TOUCH_DRIFT_LIMIT = 80;
+
+// After a button is pressed, the same button ignores further presses for
+// this many milliseconds. Stops tremor or a slow lift causing repeats.
+// Set to 0 to turn off.
+const SAME_BUTTON_LOCKOUT_MS = 350;
+
+
+(function forgivingTouch() {
+
+    let activeTouchId = null;
+    let activeControl = null;
+    let startX = 0;
+    let startY = 0;
+    let startScroll = 0;
+    let cancelled = false;
+
+    let lastControl = null;
+    let lastTime = 0;
+
+    function findControl(target) {
+        if (!target || !target.closest) return null;
+        const control = target.closest("button, #message");
+        if (!control || control.disabled) return null;
+        return control;
+    }
+
+    function reset() {
+        if (activeControl) activeControl.classList.remove("pressed");
+        activeTouchId = null;
+        activeControl = null;
+        cancelled = false;
+    }
+
+    function findTouch(list, id) {
+        for (let i = 0; i < list.length; i++) {
+            if (list[i].identifier === id) return list[i];
+        }
+        return null;
+    }
+
+    document.addEventListener("touchstart", function(event) {
+
+        // Follow only the first finger; ignore a resting palm or knuckle.
+        if (activeTouchId !== null) return;
+
+        const touch = event.changedTouches[0];
+        const control = findControl(touch.target);
+        if (!control) return;
+
+        activeTouchId = touch.identifier;
+        activeControl = control;
+        startX = touch.clientX;
+        startY = touch.clientY;
+        startScroll = window.pageYOffset;
+        cancelled = false;
+
+        // Show the button as pressed straight away.
+        control.classList.add("pressed");
+
+    }, { capture: true, passive: true });
+
+    document.addEventListener("touchmove", function(event) {
+
+        if (activeTouchId === null) return;
+
+        const touch = findTouch(event.changedTouches, activeTouchId);
+        if (!touch) return;
+
+        const moved = Math.hypot(
+            touch.clientX - startX,
+            touch.clientY - startY
+        );
+
+        // Only give up if the finger really travelled (a deliberate swipe).
+        if (moved > TOUCH_DRIFT_LIMIT) {
+            cancelled = true;
+            activeControl.classList.remove("pressed");
+        }
+
+    }, { capture: true, passive: true });
+
+    document.addEventListener("touchend", function(event) {
+
+        if (activeTouchId === null) return;
+
+        const touch = findTouch(event.changedTouches, activeTouchId);
+        if (!touch) return;
+
+        const control = activeControl;
+
+        const scrolled =
+            Math.abs(window.pageYOffset - startScroll) > 5;
+
+        const wasCancelled = cancelled || scrolled;
+
+        reset();
+
+        if (wasCancelled || !control) return;
+
+        // Stop the browser also sending its own click afterwards.
+        if (event.cancelable) event.preventDefault();
+
+        // Make sure audio is unlocked before we play anything.
+        unlockAudio();
+
+        const now = Date.now();
+
+        if (
+            SAME_BUTTON_LOCKOUT_MS > 0 &&
+            control === lastControl &&
+            now - lastTime < SAME_BUTTON_LOCKOUT_MS
+        ) {
+            return;
+        }
+
+        lastControl = control;
+        lastTime = now;
+
+        // Run the button's normal action. The press was started on this
+        // button, so it counts even if the finger slid off it slightly.
+        control.click();
+
+    }, { capture: true, passive: false });
+
+    document.addEventListener("touchcancel", function() {
+        reset();
+    }, { capture: true, passive: true });
+
+    // Stop the long-press menu that iOS/Android can show on a held button.
+    document.addEventListener("contextmenu", function(event) {
+        if (findControl(event.target)) event.preventDefault();
+    }, true);
+
+})();
 
 
 </script>
