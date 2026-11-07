@@ -28,14 +28,12 @@
 body {
     margin: 0;
     padding: 10px;
-
     background: #eeeeee;
-
     font-family: Arial, Helvetica, sans-serif;
-
     text-align: center;
-
+    -webkit-user-select: none;
     user-select: none;
+    -webkit-touch-callout: none;
 }
 
 
@@ -45,9 +43,7 @@ body {
 
 h1 {
     font-size: clamp(30px, 6vw, 52px);
-
     margin: 5px 0 10px;
-
     font-weight: bold;
 }
 
@@ -57,30 +53,25 @@ h1 {
 ========================================================= */
 
 #message {
-
     background: white;
-
     border: 5px solid #333;
-
     border-radius: 18px;
-
     min-height: 110px;
-
     padding: 15px;
-
     margin-bottom: 15px;
-
     font-size: clamp(32px, 7vw, 64px);
-
     font-weight: bold;
-
     display: flex;
-
     align-items: center;
-
     justify-content: center;
-
     word-break: break-word;
+    cursor: pointer;
+    touch-action: manipulation;
+}
+
+#message:focus-visible {
+    outline: 5px solid #1769aa;
+    outline-offset: 3px;
 }
 
 
@@ -89,54 +80,36 @@ h1 {
 ========================================================= */
 
 .button-grid {
-
     display: grid;
-
-    grid-template-columns:
-        repeat(2, 1fr);
-
+    grid-template-columns: repeat(2, 1fr);
     gap: 10px;
-
     margin-bottom: 15px;
 }
 
 
 button {
-
     border: 4px solid #222;
-
     border-radius: 18px;
-
     min-height: 95px;
-
     padding: 8px;
-
-    font-size:
-        clamp(25px, 5vw, 42px);
-
+    font-size: clamp(25px, 5vw, 42px);
     font-weight: bold;
-
     cursor: pointer;
 
-    touch-action: none;
+    /* "manipulation" removes the tap delay but still lets taps become clicks.
+       (touch-action: none can interfere with iOS taps.) */
+    touch-action: manipulation;
     -webkit-user-select: none;
     user-select: none;
     -webkit-touch-callout: none;
 
-    /* A little extra breathing room makes the whole button easier to hit. */
-    box-shadow:
-        0 4px 0 #555;
-
-    transition:
-        transform 0.05s;
+    box-shadow: 0 4px 0 #555;
+    transition: transform 0.05s;
 }
 
 
 button:active {
-
-    transform:
-        translateY(4px);
-
+    transform: translateY(4px);
     box-shadow: none;
 }
 
@@ -161,45 +134,19 @@ button:active {
     font-size: clamp(22px, 4vw, 36px);
 }
 
-#message { cursor: pointer; touch-action: none; -webkit-user-select: none; user-select: none; }
-#message:focus-visible { outline: 5px solid #1769aa; outline-offset: 3px; }
-
 
 /* =========================================================
    DIFFERENT BUTTON COLOURS
 ========================================================= */
 
-.button-yes {
-    background: #8BE28B;
-}
-
-.button-no {
-    background: #FF9999;
-}
-
-.button-positive {
-    background: #FFD966;
-}
-
-.button-condition {
-    background: #C9B1FF;
-}
-
-.button-body {
-    background: #FFB6C1;
-}
-
-.button-needs {
-    background: #87CEEB;
-}
-
-.button-help {
-    background: #FFB347;
-}
-
-.button-other {
-    background: #B8E986;
-}
+.button-yes       { background: #8BE28B; }
+.button-no        { background: #FF9999; }
+.button-positive  { background: #FFD966; }
+.button-condition { background: #C9B1FF; }
+.button-body      { background: #FFB6C1; }
+.button-needs     { background: #87CEEB; }
+.button-help      { background: #FFB347; }
+.button-other     { background: #B8E986; }
 
 
 /* =========================================================
@@ -207,21 +154,14 @@ button:active {
 ========================================================= */
 
 #keyboard {
-
     margin-top: 20px;
 }
 
-
 #keyboardTitle {
-
-    font-size:
-        clamp(28px, 5vw, 42px);
-
+    font-size: clamp(28px, 5vw, 42px);
     font-weight: bold;
-
     margin-bottom: 10px;
 }
-
 
 .keyboard-grid {
     display: flex;
@@ -259,8 +199,8 @@ button:active {
 }
 
 @keyframes letterPop {
-    0% { transform: scale(1); background: #FFFFFF; }
-    45% { transform: scale(1.12); background: #FFF2A8; }
+    0%   { transform: scale(1); background: #FFFFFF; }
+    45%  { transform: scale(1.12); background: #FFF2A8; }
     100% { transform: scale(1); background: #FFFFFF; }
 }
 
@@ -289,7 +229,7 @@ button:active {
     background: #D9D9D9;
 }
 
-.keyboard-arrow.arrow-left { left: 0; }
+.keyboard-arrow.arrow-left  { left: 0; }
 .keyboard-arrow.arrow-right { right: 0; }
 
 #message.pop-message {
@@ -297,8 +237,8 @@ button:active {
 }
 
 @keyframes messagePop {
-    0% { transform: scale(1); }
-    45% { transform: scale(1.025); }
+    0%   { transform: scale(1); }
+    45%  { transform: scale(1.025); }
     100% { transform: scale(1); }
 }
 
@@ -308,51 +248,24 @@ button:active {
 ========================================================= */
 
 .keyboard-controls {
-
     display: grid;
-
-    grid-template-columns:
-        repeat(2, 1fr);
-
+    grid-template-columns: repeat(2, 1fr);
     gap: 10px;
-
     margin-top: 10px;
 }
 
-
 .control {
-
     min-height: 90px;
-
-    font-size:
-        clamp(28px, 5vw, 44px);
+    font-size: clamp(28px, 5vw, 44px);
 }
 
-
-.delete {
-
-    background: #FF9999;
-}
-
-
-.clear {
-
-    background: #FFCC80;
-}
-
-
-.speak {
-
-    background: #8BE28B;
-}
-
+.delete { background: #FF9999; }
+.clear  { background: #FFCC80; }
+.speak  { background: #8BE28B; }
 
 .repeat {
-
     background: #C9B1FF;
-
     width: 100%;
-
     margin-top: 10px;
 }
 
@@ -362,25 +275,15 @@ button:active {
 ========================================================= */
 
 .page-controls {
-
     display: grid;
-
-    grid-template-columns:
-        1fr 1fr;
-
+    grid-template-columns: 1fr 1fr;
     gap: 10px;
-
     margin-top: 10px;
 }
 
-
 .page-button {
-
     min-height: 80px;
-
-    font-size:
-        clamp(26px, 5vw, 40px);
-
+    font-size: clamp(26px, 5vw, 40px);
     background: #D9D9D9;
 }
 
@@ -390,46 +293,25 @@ button:active {
 ========================================================= */
 
 #popup {
-
     display: none;
-
     position: fixed;
-
     left: 5%;
-
     right: 5%;
-
     top: 25%;
-
     background: white;
-
     border: 6px solid #222;
-
     border-radius: 20px;
-
     padding: 25px;
-
-    font-size:
-        clamp(35px, 7vw, 65px);
-
+    font-size: clamp(35px, 7vw, 65px);
     font-weight: bold;
-
     z-index: 9999;
-
-    box-shadow:
-        0 10px 40px
-        rgba(0,0,0,0.4);
+    box-shadow: 0 10px 40px rgba(0,0,0,0.4);
 }
 
-
 #popupClose {
-
     margin-top: 20px;
-
     min-height: 80px;
-
     font-size: 32px;
-
     background: #DDD;
 }
 
@@ -444,23 +326,11 @@ button:active {
         padding: 20px;
     }
 
-
     .button-grid {
-
-        grid-template-columns:
-            repeat(4, 1fr);
+        grid-template-columns: repeat(4, 1fr);
     }
-
-
-    .keyboard-grid {
-
-        grid-template-columns:
-            repeat(4, 1fr);
-    }
-
 
     .letter {
-
         min-height: 130px;
     }
 
@@ -477,19 +347,12 @@ button:active {
 <h1>Communication</h1>
 
 
-<!-- =====================================================
-     COMMUNICATION BUTTONS
-====================================================== -->
+<!-- COMMUNICATION BUTTONS -->
 
-<div
-    class="button-grid"
-    id="communicationButtons">
-</div>
+<div class="button-grid" id="communicationButtons"></div>
 
 
-<!-- =====================================================
-     MESSAGE DISPLAY
-====================================================== -->
+<!-- MESSAGE DISPLAY -->
 
 <div id="message" role="button" tabindex="0"
      aria-label="Tap to hear the message">
@@ -499,22 +362,13 @@ button:active {
 </div>
 
 
-<!-- =====================================================
-     KEYBOARD
-====================================================== -->
+<!-- KEYBOARD -->
 
 <div id="keyboard">
 
-    <div id="keyboardTitle">
-        KEYBOARD A–M
-    </div>
+    <div id="keyboardTitle">KEYBOARD A–M</div>
 
-
-    <div
-        class="keyboard-grid"
-        id="letters">
-    </div>
-
+    <div class="keyboard-grid" id="letters"></div>
 
     <div class="keyboard-bottom-row">
 
@@ -523,80 +377,46 @@ button:active {
             id="keyboardArrow"
             onclick="changeKeyboard()"
             aria-label="Next half of keyboard">
-
             ▶
-
         </button>
 
-        <button
-            class="spacebar"
-            onclick="addSpace()">
-
+        <button class="spacebar" onclick="addSpace()">
             SPACE
-
         </button>
 
     </div>
-
 
     <div class="keyboard-controls">
 
-        <button
-            class="control delete"
-            onclick="deleteLetter()">
-
+        <button class="control delete" onclick="deleteLetter()">
             DELETE
-
         </button>
 
-
-        <button
-            class="control clear"
-            onclick="clearMessage()">
-
+        <button class="control clear" onclick="clearMessage()">
             CLEAR
-
         </button>
 
-
-        <button
-            class="control speak"
-            onclick="speakMessage()">
-
+        <button class="control speak" onclick="speakMessage()">
             🔊 SPEAK
-
         </button>
 
     </div>
 
-
-    <button
-        class="control repeat"
-        onclick="repeatMessage()">
-
+    <button class="control repeat" onclick="repeatMessage()">
         🔊 REPEAT MESSAGE
-
     </button>
-
 
 </div>
 
 
-<!-- =====================================================
-     POPUP
-====================================================== -->
+<!-- POPUP -->
 
 <div id="popup">
 
     <div id="popupText"></div>
 
-
-    <button
-        id="popupClose"
-        onclick="closePopup()">
-
+    <button id="popupClose" onclick="closePopup()">
         CLOSE
-
     </button>
 
 </div>
@@ -613,23 +433,17 @@ button:active {
 
    THIS IS THE MAIN PART YOU WILL EDIT.
 
-   "text"  = what appears on the button
-
-   "speech" = what the device says
-
-   "colour" = colour of the button
+   "text"    = what appears on the button
+   "picture" = the symbol on the button
+   "speech"  = what the device says
+   "colour"  = colour of the button
 
    =========================================================
    ========================================================= */
 
 const communicationButtons = [
 
-    /*
-    ---------------------------------------------------------
-    YES
-    ---------------------------------------------------------
-    */
-
+    /* YES */
     {
         text: "WA",
         picture: "👍",
@@ -637,13 +451,7 @@ const communicationButtons = [
         colour: "button-yes"
     },
 
-
-    /*
-    ---------------------------------------------------------
-    NO
-    ---------------------------------------------------------
-    */
-
+    /* NO */
     {
         text: "ALI",
         picture: "👎",
@@ -651,13 +459,7 @@ const communicationButtons = [
         colour: "button-no"
     },
 
-
-    /*
-    ---------------------------------------------------------
-    OTHER BUTTONS
-    ---------------------------------------------------------
-    */
-
+    /* OTHER BUTTONS */
     {
         text: "GOOD",
         picture: "😊",
@@ -827,6 +629,21 @@ const communicationButtons = [
 ];
 
 
+/*
+   How each letter is spoken when its key is pressed.
+   Spelling the letter name out (e.g. "ay", "bee") is more reliable
+   than sending a single letter, which some voices read as a word
+   ("a" as "uh") or as "capital A".
+*/
+const letterSounds = {
+    A: "ay",   B: "bee",  C: "see",  D: "dee",  E: "ee",
+    F: "eff",  G: "jee",  H: "aitch", I: "eye", J: "jay",
+    K: "kay",  L: "ell",  M: "em",   N: "en",   O: "oh",
+    P: "pee",  Q: "cue",  R: "ar",   S: "ess",  T: "tee",
+    U: "you",  V: "vee",  W: "double you", X: "ex", Y: "why",
+    Z: "zed"
+};
+
 
 /* =========================================================
    END OF EASY EDIT SECTION
@@ -848,6 +665,11 @@ let selectedVoice = null;
 
 let audioContext = null;
 
+// Keep a reference to the current utterance. Some browsers garbage-collect
+// an utterance mid-speech, which makes it go silent.
+let currentUtterance = null;
+
+let speakTimer = null;
 
 
 /* =========================================================
@@ -880,69 +702,45 @@ const keyboardPages = [
 
 function createCommunicationButtons() {
 
-    const container =
-        document.getElementById(
-            "communicationButtons"
-        );
-
+    const container = document.getElementById("communicationButtons");
 
     container.innerHTML = "";
 
+    communicationButtons.forEach(function(item) {
 
-    communicationButtons.forEach(
-        function(item) {
+        const button = document.createElement("button");
 
-            const button =
-                document.createElement("button");
+        button.className = "communication-button " + item.colour;
 
+        const picture = document.createElement("span");
+        picture.className = "button-picture";
+        picture.textContent = item.picture || "💬";
 
-            button.className =
-                "communication-button " + item.colour;
+        const word = document.createElement("span");
+        word.className = "button-word";
+        word.textContent = item.text;
 
-            const picture = document.createElement("span");
-            picture.className = "button-picture";
-            picture.textContent = item.picture || "💬";
+        button.appendChild(picture);
+        button.appendChild(word);
 
-            const word = document.createElement("span");
-            word.className = "button-word";
-            word.textContent = item.text;
+        button.onclick = function() {
 
-            button.appendChild(picture);
-            button.appendChild(word);
+            clickSound();
 
+            // Display the word exactly as defined in "text".
+            messageText = item.text;
+            messageSpeech = item.speech;
 
-            button.onclick =
-                function() {
+            updateMessage();
 
-                    clickSound();
+            // Speak the separate pronunciation defined in "speech".
+            speak(item.speech);
 
-                    /*
-                       Display the word exactly as
-                       defined in "text".
-                    */
+        };
 
-                    messageText =
-                        item.text;
-                    messageSpeech = item.speech;
+        container.appendChild(button);
 
-                    updateMessage();
-
-
-                    /*
-                       Speak the separate
-                       pronunciation defined
-                       in "speech".
-                    */
-
-                    speak(item.speech);
-
-                };
-
-
-            container.appendChild(button);
-
-        }
-    );
+    });
 
 }
 
@@ -954,40 +752,24 @@ function createCommunicationButtons() {
 
 function loadVoices() {
 
-    const voices =
-        speechSynthesis.getVoices();
-
-
-    if (!voices ||
-        voices.length === 0) {
-
+    if (!("speechSynthesis" in window)) {
         return;
     }
 
+    const voices = speechSynthesis.getVoices();
 
-    /*
-       Look for English voices.
-    */
+    if (!voices || voices.length === 0) {
+        return;
+    }
 
-    const englishVoices =
-        voices.filter(
-            voice =>
-                voice.lang &&
-                voice.lang
-                    .toLowerCase()
-                    .startsWith("en")
-        );
+    // Look for English voices.
+    const englishVoices = voices.filter(function(voice) {
+        return voice.lang &&
+            voice.lang.toLowerCase().startsWith("en");
+    });
 
-
-    /*
-       Try common female voices first.
-
-       Different devices have different
-       voice names.
-    */
-
+    // Try common female voices first. Names differ between devices.
     const femaleNames = [
-
         "samantha",
         "karen",
         "moira",
@@ -998,69 +780,106 @@ function loadVoices() {
         "female",
         "google uk english female",
         "google us english female"
-
     ];
 
+    selectedVoice = englishVoices.find(function(voice) {
 
-    selectedVoice =
-        englishVoices.find(
-            function(voice) {
+        const name = voice.name.toLowerCase();
 
-                const name =
-                    voice.name.toLowerCase();
+        return femaleNames.some(function(femaleName) {
+            return name.includes(femaleName);
+        });
 
+    });
 
-                return femaleNames.some(
-                    function(femaleName) {
-
-                        return name.includes(
-                            femaleName
-                        );
-
-                    }
-                );
-
-            }
-        );
-
-
-    /*
-       If no obvious female voice is found,
-       prefer British English.
-    */
-
+    // If no obvious female voice is found, prefer British English.
     if (!selectedVoice) {
 
-        selectedVoice =
-            englishVoices.find(
-                voice =>
-                    voice.lang
-                        .toLowerCase() ===
-                    "en-gb"
-            );
+        selectedVoice = englishVoices.find(function(voice) {
+            return voice.lang.toLowerCase().replace("_", "-") === "en-gb";
+        });
 
     }
 
-
-    /*
-       Final fallback.
-    */
-
+    // Final fallback.
     if (!selectedVoice) {
-
-        selectedVoice =
-            englishVoices[0] || null;
-
+        selectedVoice = englishVoices[0] || null;
     }
 
 }
 
 
-speechSynthesis.onvoiceschanged =
-    loadVoices;
+if ("speechSynthesis" in window) {
+    speechSynthesis.onvoiceschanged = loadVoices;
+    loadVoices();
+}
 
 
-loadVoices();
+
+/* =========================================================
+   UNLOCK AUDIO (iPad / iPhone)
+
+   iOS only allows sound after a real tap has finished
+   (touchend / click). The first tap anywhere on the page
+   "unlocks" both the click sound and speech, so every
+   later button works.
+========================================================= */
+
+let audioUnlocked = false;
+
+function unlockAudio() {
+
+    if (audioUnlocked) {
+        return;
+    }
+
+    try {
+
+        // Unlock Web Audio
+        if (!audioContext) {
+            audioContext = new (
+                window.AudioContext || window.webkitAudioContext
+            )();
+        }
+
+        if (audioContext.state === "suspended") {
+            audioContext.resume();
+        }
+
+        // Play one silent sample to fully wake the audio system
+        const buffer = audioContext.createBuffer(1, 1, 22050);
+        const source = audioContext.createBufferSource();
+        source.buffer = buffer;
+        source.connect(audioContext.destination);
+        source.start(0);
+
+    } catch (error) {
+        // Sound not supported: carry on silently.
+    }
+
+    try {
+
+        // Unlock speech with a silent utterance
+        if ("speechSynthesis" in window) {
+
+            const silent = new SpeechSynthesisUtterance(" ");
+            silent.volume = 0;
+            speechSynthesis.speak(silent);
+
+        }
+
+    } catch (error) {
+        // Ignore
+    }
+
+    audioUnlocked = true;
+
+}
+
+// Listen on the events iOS accepts as a real user gesture.
+["touchend", "click", "keydown"].forEach(function(type) {
+    document.addEventListener(type, unlockAudio, { capture: true });
+});
 
 
 
@@ -1073,77 +892,37 @@ function clickSound() {
     try {
 
         if (!audioContext) {
-
-            audioContext =
-                new (
-                    window.AudioContext ||
-                    window.webkitAudioContext
-                )();
-
+            audioContext = new (
+                window.AudioContext || window.webkitAudioContext
+            )();
         }
 
-
-        if (
-            audioContext.state ===
-            "suspended"
-        ) {
-
+        if (audioContext.state === "suspended") {
             audioContext.resume();
-
         }
 
-
-        const oscillator =
-            audioContext
-                .createOscillator();
-
-
-        const gain =
-            audioContext
-                .createGain();
-
+        const oscillator = audioContext.createOscillator();
+        const gain = audioContext.createGain();
 
         oscillator.type = "sine";
+        oscillator.frequency.value = 600;
 
-
-        oscillator.frequency.value =
-            600;
-
-
-        gain.gain.setValueAtTime(
-            0.12,
-            audioContext.currentTime
-        );
-
+        gain.gain.setValueAtTime(0.12, audioContext.currentTime);
 
         gain.gain.exponentialRampToValueAtTime(
             0.001,
             audioContext.currentTime + 0.06
         );
 
-
         oscillator.connect(gain);
-
-
-        gain.connect(
-            audioContext.destination
-        );
-
+        gain.connect(audioContext.destination);
 
         oscillator.start();
-
-
-        oscillator.stop(
-            audioContext.currentTime + 0.06
-        );
-
+        oscillator.stop(audioContext.currentTime + 0.06);
 
     } catch (error) {
 
-        /*
-           If sound isn't supported,
-           simply continue normally.
-        */
+        // If sound isn't supported, simply continue normally.
 
     }
 
@@ -1157,77 +936,59 @@ function clickSound() {
 
 function speak(text) {
 
-    if (!text ||
-        text.trim() === "") {
-
+    if (!text || text.trim() === "") {
         return;
     }
 
+    if (!("speechSynthesis" in window)) {
+        return;
+    }
 
     // Refresh voices because iPad Safari may load them after the page opens.
-    if (!selectedVoice && typeof loadVoices === "function") {
+    if (!selectedVoice) {
         loadVoices();
     }
 
-    // Stop the previous phrase so a new selection is spoken clearly.
-    // Do not call cancel() when there is nothing queued: iOS Safari can
-    // occasionally silence the next utterance after an unnecessary cancel.
-    if (speechSynthesis.speaking || speechSynthesis.pending) {
-        speechSynthesis.cancel();
-    }
+    const utterance = new SpeechSynthesisUtterance(text);
 
-    const utterance =
-        new SpeechSynthesisUtterance(
-            text
-        );
-
-
-    /*
-       English is used for the browser voice.
-
-       The actual word being spoken is
-       controlled by the "speech" field
-       above.
-    */
-
+    // The actual word being spoken is controlled by the "speech" field.
     utterance.lang = "en-GB";
 
-
     if (selectedVoice) {
-
-        utterance.voice =
-            selectedVoice;
-
+        utterance.voice = selectedVoice;
     }
 
-
-    /*
-       Slightly slower than normal.
-
-       This can be changed if required:
-
-       0.7 = slower
-       0.8 = slow
-       1.0 = normal
-    */
-
+    // 0.7 = slower, 0.8 = slow, 1.0 = normal
     utterance.rate = 0.82;
 
-
-    /*
-       Slightly higher pitch.
-    */
-
+    // Slightly higher pitch.
     utterance.pitch = 1.05;
-
 
     utterance.volume = 1;
 
+    currentUtterance = utterance;
 
-    speechSynthesis.speak(
-        utterance
-    );
+    clearTimeout(speakTimer);
 
+    // iOS can drop the next phrase if it is spoken the instant after
+    // cancel(), so wait a moment when something is still being said.
+    if (speechSynthesis.speaking || speechSynthesis.pending) {
+
+        speechSynthesis.cancel();
+
+        speakTimer = setTimeout(function() {
+            speechSynthesis.speak(utterance);
+        }, 60);
+
+    } else {
+
+        if (speechSynthesis.paused) {
+            speechSynthesis.resume();
+        }
+
+        speechSynthesis.speak(utterance);
+
+    }
 
     lastSpoken = text;
 
@@ -1241,22 +1002,12 @@ function speak(text) {
 
 function updateMessage() {
 
-    const message =
-        document.getElementById(
-            "message"
-        );
-
+    const message = document.getElementById("message");
 
     if (messageText) {
-
-        message.textContent =
-            messageText;
-
+        message.textContent = messageText;
     } else {
-
-        message.textContent =
-            "Tap a button or type a message";
-
+        message.textContent = "Tap a button or type a message";
     }
 
     message.classList.remove("pop-message");
@@ -1268,16 +1019,27 @@ function updateMessage() {
 
 // Tap or press Enter/Space on the message area to hear the whole message.
 const messageDisplay = document.getElementById("message");
+
 messageDisplay.addEventListener("click", function() {
+
     clickSound();
+
     const textToSpeak = messageSpeech || messageText;
-    if (textToSpeak.trim()) speak(textToSpeak);
+
+    if (textToSpeak.trim()) {
+        speak(textToSpeak);
+    }
+
 });
+
 messageDisplay.addEventListener("keydown", function(event) {
+
     if (event.key === "Enter" || event.key === " ") {
         event.preventDefault();
+        event.stopPropagation();
         messageDisplay.click();
     }
+
 });
 
 
@@ -1375,10 +1137,11 @@ function addLetter(letter) {
 
     updateMessage();
 
-    // Speak only the letter name, not the word "capital".
-    // Lowercase text helps some browser voices avoid saying "capital A".
+    // Say the letter's name (e.g. "bee") rather than the raw letter.
+    // Don't let it overwrite "lastSpoken", so REPEAT still repeats
+    // the last whole word or message.
     const previousLastSpoken = lastSpoken;
-    speak(letter.toLowerCase());
+    speak(letterSounds[letter.toUpperCase()] || letter.toLowerCase());
     lastSpoken = previousLastSpoken;
 
 }
@@ -1410,8 +1173,7 @@ function deleteLetter() {
 
     clickSound();
 
-    messageText =
-        messageText.slice(0, -1);
+    messageText = messageText.slice(0, -1);
     messageSpeech = messageText;
 
     updateMessage();
@@ -1445,15 +1207,11 @@ function speakMessage() {
 
     clickSound();
 
-
     if (!messageText.trim()) {
-
         return;
-
     }
 
-
-    speak(messageText);
+    speak(messageSpeech || messageText);
 
 }
 
@@ -1467,11 +1225,8 @@ function repeatMessage() {
 
     clickSound();
 
-
     if (lastSpoken) {
-
         speak(lastSpoken);
-
     }
 
 }
@@ -1485,39 +1240,23 @@ function repeatMessage() {
 function showPopup() {
 
     if (!messageText.trim()) {
-
         return;
-
     }
-
 
     clickSound();
 
+    document.getElementById("popupText").textContent = messageText;
 
-    document.getElementById(
-        "popupText"
-    ).textContent =
-        messageText;
-
-
-    document.getElementById(
-        "popup"
-    ).style.display =
-        "block";
+    document.getElementById("popup").style.display = "block";
 
 }
-
 
 
 function closePopup() {
 
     clickSound();
 
-
-    document.getElementById(
-        "popup"
-    ).style.display =
-        "none";
+    document.getElementById("popup").style.display = "none";
 
 }
 
@@ -1527,64 +1266,62 @@ function closePopup() {
    PHYSICAL KEYBOARD
 ========================================================= */
 
-document.addEventListener(
-    "keydown",
-    function(event) {
+document.addEventListener("keydown", function(event) {
 
-        const key =
-            event.key;
+    const key = event.key;
 
+    // If a button or the message box has focus, Enter/Space already
+    // activate it natively, so don't act on them a second time here.
+    const onControl =
+        event.target &&
+        event.target.closest &&
+        event.target.closest("button, #message");
 
-        if (
-            /^[a-zA-Z]$/.test(key)
-        ) {
+    if (/^[a-zA-Z]$/.test(key)) {
 
-            addLetter(
-                key.toUpperCase()
-            );
-
+        if (event.metaKey || event.ctrlKey || event.altKey) {
             return;
-
         }
 
-
-        if (key === " ") {
-
-            addSpace();
-
-            return;
-
-        }
-
-
-        if (key === "Backspace") {
-
-            deleteLetter();
-
-            return;
-
-        }
-
-
-        if (key === "Escape") {
-
-            clearMessage();
-
-            return;
-
-        }
-
-
-        if (key === "Enter") {
-
-            speakMessage();
-
-            return;
-
-        }
+        addLetter(key.toUpperCase());
+        return;
 
     }
-);
+
+    if (onControl && (key === " " || key === "Enter")) {
+        return;
+    }
+
+    if (key === " ") {
+
+        event.preventDefault();
+        addSpace();
+        return;
+
+    }
+
+    if (key === "Backspace") {
+
+        deleteLetter();
+        return;
+
+    }
+
+    if (key === "Escape") {
+
+        clearMessage();
+        return;
+
+    }
+
+    if (key === "Enter") {
+
+        speakMessage();
+        return;
+
+    }
+
+});
 
 
 
@@ -1598,88 +1335,6 @@ displayKeyboard();
 
 updateMessage();
 
-/* =========================================================
-   IPAD-FRIENDLY TOUCH HANDLING
-   Run the existing action directly from the real touch event.
-   This preserves iPad/iPhone user activation for speech audio.
-========================================================= */
-
-(function enableIPadTouch() {
-    let lastTouchTarget = null;
-    let lastTouchTime = 0;
-
-    function findControl(target) {
-        if (!target || !target.closest) return null;
-        const control = target.closest("button, #message");
-        if (!control || control.disabled) return null;
-        return control;
-    }
-
-    function activate(control) {
-        if (control.id === "message") {
-            clickSound();
-            const textToSpeak = messageSpeech || messageText;
-            if (textToSpeak && textToSpeak.trim()) {
-                speak(textToSpeak);
-            }
-            return;
-        }
-
-        // Call the button's existing action directly during the real touch.
-        if (typeof control.onclick === "function") {
-            control.onclick.call(control);
-        }
-    }
-
-    // iOS Safari: touchstart is a trusted user gesture, unlike a scripted click.
-    document.addEventListener("touchstart", function(event) {
-        const touch = event.changedTouches && event.changedTouches[0];
-        if (!touch) return;
-
-        const control = findControl(touch.target);
-        if (!control) return;
-
-        lastTouchTarget = control;
-        lastTouchTime = Date.now();
-
-        // Activate immediately; the user does not need to release quickly.
-        activate(control);
-
-        // Prevent Safari generating a second click after the touch.
-        event.preventDefault();
-    }, { capture: true, passive: false });
-
-    // Keep mouse/trackpad use working on desktop.
-    document.addEventListener("pointerdown", function(event) {
-        if (event.pointerType === "touch") return;
-        if (event.pointerType === "mouse" && event.button !== 0) return;
-
-        const control = findControl(event.target);
-        if (!control) return;
-
-        activate(control);
-        event.preventDefault();
-    }, { capture: true, passive: false });
-
-    // Suppress only the delayed synthetic click that follows our handled touch.
-    document.addEventListener("click", function(event) {
-        const control = findControl(event.target);
-        if (
-            event.detail > 0 &&
-            control &&
-            control === lastTouchTarget &&
-            Date.now() - lastTouchTime < 1200
-        ) {
-            event.preventDefault();
-            event.stopImmediatePropagation();
-        }
-    }, true);
-
-    document.addEventListener("contextmenu", function(event) {
-        if (findControl(event.target)) event.preventDefault();
-    }, true);
-})();
-
 
 </script>
 
@@ -1687,4 +1342,3 @@ updateMessage();
 </body>
 
 </html>
-```
