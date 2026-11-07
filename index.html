@@ -161,7 +161,7 @@ button:active {
     font-size: clamp(22px, 4vw, 36px);
 }
 
-#message { cursor: pointer; }
+#message { cursor: pointer; touch-action: none; -webkit-user-select: none; user-select: none; }
 #message:focus-visible { outline: 5px solid #1769aa; outline-offset: 3px; }
 
 
@@ -1164,8 +1164,17 @@ function speak(text) {
     }
 
 
-    speechSynthesis.cancel();
+    // Refresh voices because iPad Safari may load them after the page opens.
+    if (!selectedVoice && typeof loadVoices === "function") {
+        loadVoices();
+    }
 
+    // Stop the previous phrase so a new selection is spoken clearly.
+    // Do not call cancel() when there is nothing queued: iOS Safari can
+    // occasionally silence the next utterance after an unnecessary cancel.
+    if (speechSynthesis.speaking || speechSynthesis.pending) {
+        speechSynthesis.cancel();
+    }
 
     const utterance =
         new SpeechSynthesisUtterance(
@@ -1590,53 +1599,76 @@ displayKeyboard();
 updateMessage();
 
 /* =========================================================
-   FORGIVING TOUCH / PRESS HANDLING
-   Activate as soon as the finger or mouse button goes down.
-   This helps when the user cannot make a quick tap-and-release.
-   Prevent the browser's later click from activating it twice.
+   IPAD-FRIENDLY TOUCH HANDLING
+   Run the existing action directly from the real touch event.
+   This preserves iPad/iPhone user activation for speech audio.
 ========================================================= */
 
-(function enableForgivingPresses() {
-    let lastPressedTarget = null;
-    let lastPressTime = 0;
+(function enableIPadTouch() {
+    let lastTouchTarget = null;
+    let lastTouchTime = 0;
 
-    function getPressTarget(target) {
+    function findControl(target) {
         if (!target || !target.closest) return null;
-
         const control = target.closest("button, #message");
-        if (!control) return null;
-
-        // Ignore disabled controls and anything inside the popup except its button.
-        if (control.disabled) return null;
+        if (!control || control.disabled) return null;
         return control;
     }
 
-    document.addEventListener("pointerdown", function(event) {
-        const control = getPressTarget(event.target);
+    function activate(control) {
+        if (control.id === "message") {
+            clickSound();
+            const textToSpeak = messageSpeech || messageText;
+            if (textToSpeak && textToSpeak.trim()) {
+                speak(textToSpeak);
+            }
+            return;
+        }
+
+        // Call the button's existing action directly during the real touch.
+        if (typeof control.onclick === "function") {
+            control.onclick.call(control);
+        }
+    }
+
+    // iOS Safari: touchstart is a trusted user gesture, unlike a scripted click.
+    document.addEventListener("touchstart", function(event) {
+        const touch = event.changedTouches && event.changedTouches[0];
+        if (!touch) return;
+
+        const control = findControl(touch.target);
         if (!control) return;
 
-        // Only handle the primary finger / mouse button.
-        if (event.pointerType === "mouse" && event.button !== 0) return;
+        lastTouchTarget = control;
+        lastTouchTime = Date.now();
 
+        // Activate immediately; the user does not need to release quickly.
+        activate(control);
+
+        // Prevent Safari generating a second click after the touch.
         event.preventDefault();
-
-        lastPressedTarget = control;
-        lastPressTime = Date.now();
-
-        // Trigger the existing button action immediately, without waiting for release.
-        control.click();
     }, { capture: true, passive: false });
 
-    document.addEventListener("click", function(event) {
-        const control = getPressTarget(event.target);
+    // Keep mouse/trackpad use working on desktop.
+    document.addEventListener("pointerdown", function(event) {
+        if (event.pointerType === "touch") return;
+        if (event.pointerType === "mouse" && event.button !== 0) return;
+
+        const control = findControl(event.target);
         if (!control) return;
 
-        // The synthetic click from control.click() has detail 0 and must pass.
-        // Suppress the browser-generated click after the same physical press.
+        activate(control);
+        event.preventDefault();
+    }, { capture: true, passive: false });
+
+    // Suppress only the delayed synthetic click that follows our handled touch.
+    document.addEventListener("click", function(event) {
+        const control = findControl(event.target);
         if (
             event.detail > 0 &&
-            control === lastPressedTarget &&
-            Date.now() - lastPressTime < 1500
+            control &&
+            control === lastTouchTarget &&
+            Date.now() - lastTouchTime < 1200
         ) {
             event.preventDefault();
             event.stopImmediatePropagation();
@@ -1644,9 +1676,7 @@ updateMessage();
     }, true);
 
     document.addEventListener("contextmenu", function(event) {
-        if (getPressTarget(event.target)) {
-            event.preventDefault();
-        }
+        if (findControl(event.target)) event.preventDefault();
     }, true);
 })();
 
